@@ -1,0 +1,29 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://demoScene/modules/assets/lowerDoor.obj" type="ArrayMesh" id=1]
+[ext_resource path="res://demoScene/modules/assets/upperDoor.obj" type="ArrayMesh" id=2]
+[ext_resource path="res://demoScene/materials/door.tres" type="Material" id=3]
+[ext_resource path="res://demoScene/Door.gd" type="Script" id=4]
+[ext_resource path="res://demoScene/modules/assets/doorFrame.obj" type="ArrayMesh" id=5]
+[ext_resource path="res://demoScene/materials/support.tres" type="Material" id=6]
+
+[node name="Door" type="Spatial"]
+script = ExtResource( 4 )
+
+[node name="point" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.48067, 0, 0 )
+
+[node name="upperDoor" type="MeshInstance" parent="point"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.48067, 0, 0 )
+mesh = ExtResource( 2 )
+material/0 = ExtResource( 3 )
+
+[node name="lowerDoor" type="MeshInstance" parent="point"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.48067, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 3 )
+
+[node name="doorFrame" type="MeshInstance" parent="."]
+use_in_baked_light = true
+mesh = ExtResource( 5 )
+material/0 = ExtResource( 6 )

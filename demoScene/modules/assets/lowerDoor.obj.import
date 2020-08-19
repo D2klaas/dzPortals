@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/lowerDoor.obj-a37df757cbfedf27311e00da51ff506d.mesh"
+
+[deps]
+
+files=[ "res://.import/lowerDoor.obj-a37df757cbfedf27311e00da51ff506d.mesh" ]
+
+source_file="res://demoScene/modules/assets/lowerDoor.obj"
+dest_files=[ "res://.import/lowerDoor.obj-a37df757cbfedf27311e00da51ff506d.mesh", "res://.import/lowerDoor.obj-a37df757cbfedf27311e00da51ff506d.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

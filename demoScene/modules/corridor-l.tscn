@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://addons/dzPortals/materials/gate.material" type="Material" id=1]
 [ext_resource path="res://addons/dzPortals/materials/area.material" type="Material" id=2]
@@ -6,13 +6,24 @@
 [ext_resource path="res://addons/dzPortals/scripts/dzPortalsZone.gd" type="Script" id=4]
 [ext_resource path="res://addons/dzPortals/scripts/dzPortalsGate.gd" type="Script" id=5]
 [ext_resource path="res://demoScene/modules/assets/corridor-l.obj" type="ArrayMesh" id=6]
+[ext_resource path="res://demoScene/modules/lamp.tscn" type="PackedScene" id=7]
+[ext_resource path="res://demoScene/materials/grate.tres" type="Material" id=8]
+[ext_resource path="res://demoScene/materials/floorPlate.tres" type="Material" id=9]
+[ext_resource path="res://demoScene/materials/wall.tres" type="Material" id=10]
 
 [node name="dzPortalsZone" type="Position3D"]
 script = ExtResource( 4 )
 
 [node name="corridor-l" type="MeshInstance" parent="."]
+use_in_baked_light = true
 mesh = ExtResource( 6 )
-material/0 = null
+material/0 = ExtResource( 10 )
+material/1 = ExtResource( 9 )
+material/2 = ExtResource( 9 )
+material/3 = ExtResource( 8 )
+material/4 = ExtResource( 8 )
+material/5 = ExtResource( 8 )
+material/6 = ExtResource( 8 )
 
 [node name="dzPortalsZoneArea" type="ImmediateGeometry" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09935, 2.1007, -0.09935 )
@@ -38,3 +49,10 @@ dimensions = Vector2( 5, 5 )
 _blue_zone = NodePath("..")
 is_magnetic = true
 auto_magnetic = true
+
+[node name="Lamp" parent="." instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 4.22204, 0 )
+
+[node name="ReflectionProbe" type="ReflectionProbe" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3646, 0 )
+extents = Vector3( 4, 4, 4 )

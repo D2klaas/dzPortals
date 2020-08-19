@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://demoScene/materials/emitter.tres" type="Material" id=1]
+
+[sub_resource type="CubeMesh" id=1]
+material = ExtResource( 1 )
+size = Vector3( 0.5, 0.5, 2 )
+
+[node name="Lamp" type="Spatial"]
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+use_in_baked_light = true
+mesh = SubResource( 1 )
+material/0 = null

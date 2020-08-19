@@ -2,7 +2,7 @@
 
 [resource]
 emission_enabled = true
-emission = Color( 0.341176, 0.733333, 0.243137, 1 )
-emission_energy = 16.0
+emission = Color( 1, 1, 1, 1 )
+emission_energy = 60.0
 emission_operator = 0
 emission_on_uv2 = false
