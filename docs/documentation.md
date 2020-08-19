@@ -62,7 +62,12 @@ You have to hit "Refresh polygon count" first to aquire the total amount of scen
 * processing time: the time it took to process all areas and gates
 
 ### Tools
+
 ### Visibility
+* CREATE
+** Create zones for selected zones
+descrion here
+** Create zones for selected zones
 
 ## [API](#api)
 here
