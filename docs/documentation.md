@@ -97,46 +97,46 @@ All of the feature of dzPortals can be accessed through scripting.
 ### dzPortalsZone
 
 #### Properties
-**disabled**:bool  
-defaults to false
+**disabled** :bool  
+*defaults to false*
 
 #### Methodes
 void **auto_blacklist()**  
-automaticly generates a blacklist of zones
+*automaticly generates a blacklist of zones*
 
 void **add_blackList( zone: dzPortalsZone )**  
-adds the zone to the blacklist
+*adds the zone to the blacklist*
 
 void **remove_blackList( zone: dzPortalsZone )**  
-removes the zone from the blacklist
+*removes the zone from the blacklist*
 
 ### dzPortalsArea
 
 #### Properties
-**disabled**:bool  
-defaults to false
+**disabled** :bool  
+*defaults to false*
 
-**shape**  
-defines the shape, can be SHAPE.box, SHAPE.sphere or SHAPE.cylinder
+**shape** :dzPortalsArea.STATE  
+*defines the shape, can be SHAPE.box, SHAPE.sphere or SHAPE.cylinder*
 
 **dimensions**: Vector3  
-defines spacial extends
+*defines spacial extends*
 
 **margin**: Float  
-defines spacial margins
+*defines spacial margins*
 
 **zone**: dzPortalsZone  
-the connected zone
+*the connected zone*
 
 #### Methodes
 bool **is_inside( Vector3 )**  
-Returns true if point is in volume
+*Returns true if point is in volume*
 
 void **assign_to_parent( )**  
-Connects this area to the parent zone
+*Connects this area to the parent zone*
 
 void **resize_to_mesh( mesh:meshInstance )**  
-Resizes the area to the given mesh extends
+*Resizes the area to the given mesh extends*
 
 void **resize_to_zone( )**  
-Resizes the area to the extends of the connected zone
+*Resizes the area to the extends of the connected zone*
