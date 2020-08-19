@@ -1,12 +1,12 @@
 #dzPortals - Documentation
 
-## [Installation](#installation)
+## Installation
 Just download the project, unzip it and place the contents of the addons folder into the addons folder of your godot project directory.
 Reload/load your project.
 In godot goto project settings->addons and activate the dzPortals addon.
 You're done.
 
-## [Basic workings](#basics)
+## Basic workings
 DzPortals works with 3 basic objects zones, areas and gates.
 
 A zone defines a confined space that should be culled by the portals engine.
@@ -42,7 +42,27 @@ Gates can connect two zones via setting them directly or can be defined as magne
 * do frustum check: uses anhanced visibility check with sligthly increased calculation effort
 * blue zone: node Path to the zone on the blue side
 * red zone: node Path to the zone on the red side
-* is magnetic: this gate is magnetic and will connect to other magnetic gates. This option only apply when *only one* side is connected to a zone.
+* is magnetic: this gate is magnetic and will connect to other magnetic gates. This option only apply when **only one** side is connected to a zone.
+* auto magnetic: will automaticly connect to any nearby gate when moved in scene
+* magnetic distance: the max distance for magnetic snapping
+* magnetic angle: the max orientation offset for magnetic snapping
+* magnetic dimension: the max difference of the gates dimensions for magnetic snapping
+* magnetic gaze: the nodePath to the magnetic snapped gate
+* disabled: gate gets excluded from calculation. The gate will not activate the zone connected to it. Usefull when a door, portal etc. is closed. When a visual instance is blocking the sight through the gate you can turn off the gate. This will prevent the zone behinde the gate to be rendered.
+
+## dzPortals Inspector
+On the bottom menu you find the dzPortlas Inspector with many usefull tools to help you build your portals  system.
+
+### Stats
+Here you see the impact of the portal optimisation.
+* visible zones: zones that are visible, the others are not
+* gates processed: the amount of gates that had to be calculated in the current frame
+* clipped polys: the amount of polygons that are clipped through portals optimisation. This number shows only potential reduced polygons, this does not take in acount allready clipped polygons through frustum culling or any other culling/hiding optimization.
+You have to hit "Refresh polygon count" first to aquire the total amount of scene polygons.
+* processing time: the time it took to process all areas and gates
+
+### Tools
+### Visibility
 
 ## [API](#api)
 here
