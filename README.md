@@ -26,7 +26,7 @@ I'm waiting for your issues
 ## Contributing
 Please try and test it. Any issue report and suggestion are appreciated.
 
-##To Do
+## To Do
 * make gizmos pickable in the editor
 * Fix the make zone to root problem.  
 (i haven't found any way to make a node created by script to the new scene root)
