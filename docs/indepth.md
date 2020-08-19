@@ -1,3 +1,2 @@
-# Algorithm insight
-
+# Algorithm indepth
 comming soon
