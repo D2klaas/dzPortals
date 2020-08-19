@@ -21,7 +21,7 @@ Areas define the volume of a zone. A zones volume can be defined by one or more 
 Gates are the visual connections between zones.
 
 ## Zone
-<img width="225" height="225" alt="Zone Gizmo in editor" src="screens/zone-icon.PNG"> 
+<img width="225" height="225" alt="Area Gizmo in editor" src="screens/zone-icon.PNG"> 
  Zone should containe all visual instances of the defining space. If the zone is culled it gets hidden and so do all of its children nodes.
   
 ### Properties:
@@ -29,6 +29,7 @@ Gates are the visual connections between zones.
 * blackList: Array of nodePath's. When the camera is in the zone ayy nodes defined in here will be immediately culled and excluded from any further processing.
 
 ## Area
+<img width="225" height="225" alt="Zone Gizmo in editor" src="screens/area-icon.PNG"> 
 Areas should enclose all of the visual instances in the zone. You can have as many areas linked to a zone as you like.
 
 ### Properties:
@@ -41,6 +42,7 @@ Areas should enclose all of the visual instances in the zone. You can have as ma
 
 
 ## Gate
+<img width="225" height="225" alt="Gate Gizmo in editor" src="screens/gate-icon.PNG"> 
 Gates should cover doorways, portals, windows etc. completly or else you will have pop in effects when looking around.
 Gates have two sides, a blue side and a red side. The sides should be connected with the corresponding zones.
 Gates can connect two zones via setting them directly or can be defined as magnetic. Magnetic gates have only one side connected with a zone. If they come close to another magnetic portal with similar properties they can connect and act as one portal. This is espacially usefull when you are building your scene with modular subscenes. You can then define the openings in the subscene and when putting it together in the main scene they  connect automaticly.
