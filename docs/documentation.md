@@ -119,6 +119,7 @@ Gizmo visiblity can be toggled here.
 All of the feature of dzPortals can be accessed through scripting. 
 
 ### dzPortals
+Is a singleton
 
 #### Properties
 **disabled** :bool  
