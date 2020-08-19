@@ -74,6 +74,7 @@ Gates can connect two zones via setting them directly or can be defined as magne
 On the bottom menu you find the dzPortlas Inspector with many usefull tools to help you build your portals  system.
 
 ### Stats
+<img src="screens/inspector-stats.png">
 Here you see the impact of the portal optimisation.
 * visible zones: zones that are visible, the others are not
 * gates processed: the amount of gates that had to be calculated in the current frame
@@ -82,6 +83,7 @@ You have to hit "Refresh polygon count" first to aquire the total amount of scen
 * processing time: the time it took to process all areas and gates
 
 ### Tools
+<img src="screens/inspector-tools.png">
 Here you find a collection of usefull tools to make your scene ready for portals. This speeds up the work and make it more convenient.
 * **CREATE**
   * Create zones for selected zones  
@@ -109,6 +111,7 @@ Will create zone for the every currently selected nodes. The selected nodes will
 Any action taken will only be commited on selected nodes in the tree when this option is enabled. If not enabled actions will be taken on all corresponding nodes in the tree.
  
 ### Visibility
+<img src="screens/inspector-visibility.png">
 Gizmo visiblity can be toggled here.
 
 ## API
