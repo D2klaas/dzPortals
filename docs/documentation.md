@@ -111,6 +111,20 @@ void **add_blackList( zone: dzPortalsZone )**
 void **remove_blackList( zone: dzPortalsZone )**  
 *removes the zone from the blacklist*
 
+#### Signals
+**zone_entered**  
+*whenever the camera entered the zone*
+
+**zone_exited**
+*whenever the camera exited the zone*
+
+**zone_shown**  
+*whenever the zone gets visible*
+
+**zone_hidden**
+*whenever the zone gets invisible*
+
+
 ### dzPortalsArea
 
 #### Properties
@@ -141,6 +155,13 @@ void **resize_to_mesh( mesh:meshInstance )**
 
 void **resize_to_zone( )**  
 *Resizes the area to the extends of the connected zone*
+
+#### Signals
+**area_entered**  
+*whenever the camera entered the area*
+
+**area_exited**
+*whenever the camera exited the area*
 
 ### dzPortalsGate
 
@@ -211,3 +232,5 @@ dzPortalsZone **get_other_zone( dzPortalsZone )**
 
 void **auto_connect_zones( )**  
 *tries to find corresponding zones and connects them*
+
+
