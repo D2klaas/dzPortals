@@ -42,6 +42,7 @@ var red_zone
 var cornerPoints = []
 var _plane
 var _viewportSprite
+var _is_ready = false
 
 func get_class():
 	return "dzPortalsGate"
@@ -55,6 +56,7 @@ func _ready():
 	_set_dimensions(dimensions)
 	add_to_group("dzPortalsGates")
 	material_override = load("res://addons/dzPortals/materials/gate.material")
+	_is_ready = true
 
 
 func _add_viewport_sprite():
@@ -395,6 +397,8 @@ func get_other_zone( zone ):
 
 func redraw():
 	if not Engine.editor_hint:
+		return
+	if not _is_ready:
 		return
 
 	var d = dimensions / 2.0

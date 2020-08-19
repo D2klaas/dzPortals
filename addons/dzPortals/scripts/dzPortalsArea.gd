@@ -27,6 +27,7 @@ export(bool) var disabled = false setget _set_disabled
 
 var _is_inside_last_time = false
 var _viewportSprite
+var _is_ready = false
 
 signal area_entered
 signal area_exited
@@ -42,7 +43,7 @@ func _ready():
 	_register_blackList( )
 	material_override =  load("res://addons/dzPortals/materials/area.material")
 	add_to_group("dzPortalsAreas")
-
+	_is_ready = true
 
 func _add_viewport_sprite():
 	if _viewportSprite:
@@ -196,6 +197,8 @@ func _process(delta):
 
 func redraw():
 	if not Engine.editor_hint:
+		return
+	if not _is_ready:
 		return
 	
 	var d = dimensions / 2.0 + Vector3(margin,margin,margin)
