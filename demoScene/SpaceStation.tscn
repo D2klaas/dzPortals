@@ -1,0 +1,71 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://demoScene/modules/room-1.tscn" type="PackedScene" id=1]
+[ext_resource path="res://demoScene/modules/corridor.tscn" type="PackedScene" id=2]
+[ext_resource path="res://demoScene/modules/corridor-l.tscn" type="PackedScene" id=3]
+[ext_resource path="res://demoScene/Camera.gd" type="Script" id=5]
+[ext_resource path="res://demoScene/modules/corridor-x-junction.tscn" type="PackedScene" id=6]
+[ext_resource path="res://demoScene/modules/lido-entry.tscn" type="PackedScene" id=13]
+
+[sub_resource type="Environment" id=1]
+background_mode = 1
+ambient_light_color = Color( 0.176471, 0.176471, 0.176471, 1 )
+
+[node name="Spatial" type="Spatial"]
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 0.762127, 0, -0.647428, 0, 1, 0, 0.647428, 0, 0.762127, -21.5313, 1.2781, -0.429024 )
+script = ExtResource( 5 )
+
+[node name="lido-entry4" parent="." instance=ExtResource( 13 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0, 0 )
+_blackList = [ NodePath("../dzPortalsZone") ]
+
+[node name="lido-entry5" parent="." instance=ExtResource( 13 )]
+transform = Transform( 0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -6, 0, 17 )
+_blackList = [ NodePath("../corridor-x-junction") ]
+
+[node name="lido-entry6" parent="." instance=ExtResource( 13 )]
+transform = Transform( 0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -6, 0, -17 )
+_blackList = [ NodePath("../corridor-x-junction") ]
+
+[node name="corridor" parent="." instance=ExtResource( 2 )]
+_blackList = [ NodePath("../lido-entry5"), NodePath("../lido-entry6"), NodePath("../dzPortalsZone") ]
+
+[node name="corridor4" parent="." instance=ExtResource( 2 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -5, 0, 5 )
+_blackList = [ NodePath("../dzPortalsZone"), NodePath("../lido-entry5"), NodePath("../lido-entry6") ]
+
+[node name="corridor5" parent="." instance=ExtResource( 2 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -5, 0, -5 )
+_blackList = [ NodePath("../dzPortalsZone"), NodePath("../lido-entry5"), NodePath("../lido-entry6") ]
+
+[node name="corridor2" parent="." instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 0 )
+_blackList = [ NodePath("../lido-entry5"), NodePath("../lido-entry6") ]
+
+[node name="corridor6" parent="." instance=ExtResource( 2 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 10, 0, 5 )
+_blackList = [ NodePath("../corridor4"), NodePath("../lido-entry5"), NodePath("../lido-entry6") ]
+
+[node name="corridor3" parent="." instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 0 )
+_blackList = [ NodePath("../dzPortalsZone") ]
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 0.951568, -0.130173, 0.278522, -0.251031, -0.851991, 0.459451, 0.17749, -0.507116, -0.843404, 0, 11.7858, 0 )
+shadow_enabled = true
+
+[node name="corridor-x-junction" parent="." instance=ExtResource( 6 )]
+_blackList = [ NodePath("../dzPortalsZone"), NodePath("../lido-entry5"), NodePath("../lido-entry6") ]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 1 )
+
+[node name="dzPortalsZone" parent="." instance=ExtResource( 1 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 10, 0, 11 )
+_blackList = [ NodePath("../corridor-x-junction") ]
+
+[node name="dzPortalsZone2" parent="." instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 10, 0, 0 )
+_blackList = [ NodePath("../lido-entry5"), NodePath("../lido-entry6") ]

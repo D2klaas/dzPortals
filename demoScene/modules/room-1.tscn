@@ -1,0 +1,68 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://addons/dzPortals/scripts/dzPortalsZone.gd" type="Script" id=1]
+[ext_resource path="res://demoScene/modules/assets/room-wall.obj" type="ArrayMesh" id=2]
+[ext_resource path="res://demoScene/modules/assets/room-corner.obj" type="ArrayMesh" id=3]
+[ext_resource path="res://demoScene/modules/assets/room-entry.obj" type="ArrayMesh" id=4]
+[ext_resource path="res://addons/dzPortals/materials/gate.material" type="Material" id=5]
+[ext_resource path="res://addons/dzPortals/scripts/dzPortalsGate.gd" type="Script" id=6]
+[ext_resource path="res://addons/dzPortals/materials/area.material" type="Material" id=7]
+[ext_resource path="res://addons/dzPortals/scripts/dzPortalsArea.gd" type="Script" id=8]
+
+[node name="dzPortalsZone" type="Position3D"]
+script = ExtResource( 1 )
+
+[node name="room-entry" type="MeshInstance" parent="."]
+mesh = ExtResource( 4 )
+material/0 = null
+
+[node name="room-corner" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10 )
+mesh = ExtResource( 3 )
+material/0 = null
+
+[node name="room-corner2" type="MeshInstance" parent="."]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 5 )
+mesh = ExtResource( 3 )
+material/0 = null
+
+[node name="room-corner3" type="MeshInstance" parent="."]
+transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 5, 0, 5 )
+mesh = ExtResource( 3 )
+material/0 = null
+
+[node name="room-corner4" type="MeshInstance" parent="."]
+transform = Transform( 1.94707e-07, 0, -1, 0, 1, 0, 1, 0, 1.94707e-07, 5, 0, -10 )
+mesh = ExtResource( 3 )
+material/0 = null
+
+[node name="room-wall" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5 )
+mesh = ExtResource( 2 )
+material/0 = null
+
+[node name="room-wall2" type="MeshInstance" parent="."]
+transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 5, 0, -5 )
+mesh = ExtResource( 2 )
+material/0 = null
+
+[node name="room-wall3" type="MeshInstance" parent="."]
+transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 5, 0, 0 )
+mesh = ExtResource( 2 )
+material/0 = null
+
+[node name="dzPortalsGate" type="ImmediateGeometry" parent="."]
+transform = Transform( -1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, -3.5, 2, 0 )
+material_override = ExtResource( 5 )
+script = ExtResource( 6 )
+dimensions = Vector2( 5, 5 )
+_blue_zone = NodePath("..")
+is_magnetic = true
+auto_magnetic = true
+
+[node name="dzPortalsZoneArea" type="ImmediateGeometry" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.40175, 2.0861, -2.5 )
+material_override = ExtResource( 7 )
+script = ExtResource( 8 )
+dimensions = Vector3( 15.8035, 5.9578, 21.607 )
+_zone = NodePath("..")

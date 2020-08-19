@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/corridor-l.obj-b6f15a1bf717a227bb0dd660b4d27e41.mesh"
+
+[deps]
+
+files=[ "res://.import/corridor-l.obj-b6f15a1bf717a227bb0dd660b4d27e41.mesh" ]
+
+source_file="res://demoScene/modules/assets/corridor-l.obj"
+dest_files=[ "res://.import/corridor-l.obj-b6f15a1bf717a227bb0dd660b4d27e41.mesh", "res://.import/corridor-l.obj-b6f15a1bf717a227bb0dd660b4d27e41.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

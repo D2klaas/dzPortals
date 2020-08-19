@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/room-corner.obj-fe138728c6998eb80a7b24b4ee5eb13e.mesh"
+
+[deps]
+
+files=[ "res://.import/room-corner.obj-fe138728c6998eb80a7b24b4ee5eb13e.mesh" ]
+
+source_file="res://demoScene/modules/assets/room-corner.obj"
+dest_files=[ "res://.import/room-corner.obj-fe138728c6998eb80a7b24b4ee5eb13e.mesh", "res://.import/room-corner.obj-fe138728c6998eb80a7b24b4ee5eb13e.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true
