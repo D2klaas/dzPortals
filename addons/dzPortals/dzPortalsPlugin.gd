@@ -1,3 +1,14 @@
+######################################################################
+#
+# Project           : dzPortals
+# Author            : Klaas Janneck
+# Date              : Aug 2020
+# Purpose           : Godot portal engine plugin
+# License           : MIT
+# contact           : kj@deck-zwei.de
+# Source at         : https://github.com/D2klaas/dzPortals
+#
+######################################################################
 tool
 extends EditorPlugin
 

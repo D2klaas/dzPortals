@@ -1,9 +1,20 @@
+######################################################################
+#
+# Project           : dzPortals
+# Author            : Klaas Janneck
+# Date              : Aug 2020
+# Purpose           : Godot portal engine plugin
+# License           : MIT
+# contact           : kj@deck-zwei.de
+# Source at         : https://github.com/D2klaas/dzPortals
+#
+######################################################################
 tool
 extends ImmediateGeometry
 #warning-ignore-all:unused_argument
 
-enum SHAPES { box,sphere,cylinder }
-export(SHAPES) var shape = 0
+enum SHAPE { box,sphere,cylinder }
+export(SHAPE) var shape = 0
 export(Vector3) var dimensions = Vector3.ONE
 export(float) var margin = 0.05
 export(NodePath) var _zone setget _set_zone
@@ -20,14 +31,15 @@ var _viewportSprite
 signal area_entered
 signal area_exited
 
+func get_class():
+	return "dzPortalsArea"
 
 #---------------------------------------- processing
 func _ready():
 	if Engine.editor_hint:
 		_add_viewport_sprite()
-
-	register_zone( )
-	register_blackList( )
+	_register_zone( )
+	_register_blackList( )
 	material_override =  load("res://addons/dzPortals/materials/area.material")
 	add_to_group("dzPortalsAreas")
 
@@ -82,9 +94,9 @@ func do_inspector():
 #-------------------------------- black list
 func _set_blackList( value ):
 	_blackList = value
-	register_blackList( )
+	_register_blackList( )
 
-func register_blackList( ):
+func _register_blackList( ):
 	blackList = []
 	for zonePath in _blackList:
 		if typeof(zonePath) == TYPE_NODE_PATH:
@@ -100,24 +112,25 @@ func _set_disabled(value):
 #-------------------------------- zone
 func _set_zone( value ):
 	_zone = value
-	register_zone()
+	_register_zone()
 
-func register_zone( ):
+func _register_zone( ):
 	zone = get_node_or_null(_zone)
 
 
 #-------------------------------- state
 func is_inside( vec ):
 	match shape:
-		SHAPES.box:
-			return is_inside_box(vec)
-		SHAPES.sphere:
-			return is_inside_sphere(vec)
-		SHAPES.cylinder:
-			return is_inside_cylinder( vec )
+		SHAPE.box:
+			return _is_inside_box(vec)
+		SHAPE.sphere:
+			return _is_inside_sphere(vec)
+		SHAPE.cylinder:
+			return _is_inside_cylinder( vec )
+	return false
 
 
-func is_inside_box( vec ):
+func _is_inside_box( vec ):
 	var d = dimensions / 2.0 + Vector3(margin,margin,margin)
 	var v = to_local(vec)
 	if abs(v.x) > d.x:
@@ -129,7 +142,7 @@ func is_inside_box( vec ):
 	return true
 
 
-func is_inside_sphere( vec ):
+func _is_inside_sphere( vec ):
 	var d = dimensions / 2.0 + Vector3(margin,margin,margin)
 	var v = to_local(vec)
 	if v.length() > d.x:
@@ -137,7 +150,7 @@ func is_inside_sphere( vec ):
 	return true
 
 
-func is_inside_cylinder( vec ):
+func _is_inside_cylinder( vec ):
 	var d = dimensions / 2.0 + Vector3(margin,margin,margin)
 	var v = to_local(vec)
 	if abs(v.y) > d.y:
@@ -148,7 +161,7 @@ func is_inside_cylinder( vec ):
 
 
 #-------------------------------- drawing
-func getDrawColor():
+func _getDrawColor():
 	if disabled:
 		return Color(0.5,0.5,0.5,0.25)
 	if zone and zone._is_visible:
@@ -156,8 +169,8 @@ func getDrawColor():
 	else:
 		return Color(1,0,0,0.25)
 
-func setDrawColor():
-	set_color(getDrawColor())
+func _setDrawColor():
+	set_color(_getDrawColor())
 
 
 var _last_color
@@ -168,8 +181,8 @@ func _process(delta):
 	if not Engine.editor_hint:
 		return
 	var update = false
-	if _last_color != getDrawColor().to_rgba32():
-		_last_color = getDrawColor().to_rgba32()
+	if _last_color != _getDrawColor().to_rgba32():
+		_last_color = _getDrawColor().to_rgba32()
 		update = true
 	if _last_shape != shape:
 		_last_shape = shape
@@ -189,17 +202,17 @@ func redraw():
 	clear()
 	
 	match shape:
-		SHAPES.box:
-			drawBox(d)
-		SHAPES.sphere:
-			drawSphere(d.x)
-		SHAPES.cylinder:
-			drawCylinder( 18, d.x, d.y)
+		SHAPE.box:
+			_drawBox(d)
+		SHAPE.sphere:
+			_drawSphere(d.x)
+		SHAPE.cylinder:
+			_drawCylinder( 18, d.x, d.y)
 
 
-func drawBox( d ):
+func _drawBox( d ):
 	begin(Mesh.PRIMITIVE_TRIANGLES)
-	setDrawColor()
+	_setDrawColor()
 	
 	set_uv(Vector2( d.x, d.y))
 	add_vertex(Vector3( d.x, d.y, d.z))
@@ -282,14 +295,14 @@ func drawBox( d ):
 	end()
 
 
-func drawCylinder( sides, r, h):
+func _drawCylinder( sides, r, h):
 	var angle = (360.0 / sides) * 0.01745329252
 	var halfHeight = h
 	sides += 1
 	
 	# draw top of the tube
 	begin(Mesh.PRIMITIVE_TRIANGLE_FAN )
-	setDrawColor()
+	_setDrawColor()
 	for i in range(0,sides):
 		var x = cos( ( i * angle ) ) * r;
 		var y = sin( ( i * angle ) ) * r;
@@ -299,7 +312,7 @@ func drawCylinder( sides, r, h):
 	
 	# draw bottom of the tube
 	begin(Mesh.PRIMITIVE_TRIANGLE_FAN )
-	setDrawColor()
+	_setDrawColor()
 	for i in range(0,sides):
 		var x = cos( ( i * angle ) ) * r
 		var y = sin( ( i * angle ) ) * r
@@ -309,7 +322,7 @@ func drawCylinder( sides, r, h):
 	
 	# draw sides
 	begin(Mesh.PRIMITIVE_TRIANGLE_STRIP )
-	setDrawColor()
+	_setDrawColor()
 	for i in range(0,sides):
 		var x = cos( ( i * angle ) ) * r;
 		var y = sin( ( i * angle ) ) * r;
@@ -320,15 +333,15 @@ func drawCylinder( sides, r, h):
 	end()
 
 
-func drawSphere( d ):
+func _drawSphere( d ):
 	begin(Mesh.PRIMITIVE_TRIANGLES )
-	setDrawColor()
+	_setDrawColor()
 	add_sphere( 8, 14, d )
 	end()
 
 
 #----------------------------------- tool functions
-func _assign_to_parent():
+func assign_to_parent():
 	var o = self
 	while o:
 		if o.get_class() == "dzPortalsZone":
@@ -337,7 +350,7 @@ func _assign_to_parent():
 			return
 		o = o.get_parent()
 
-func _resize_to_mesh( child ):
+func resize_to_mesh( child ):
 	if not child:
 		return
 	var lowest = Vector3(99999,99999,99999)
@@ -383,7 +396,7 @@ func _resize_to_mesh( child ):
 	dimensions = size.abs()
 
 
-func _resize_to_zone():
+func resize_to_zone():
 	if not zone:
 		return
 	var lowest = Vector3(99999,99999,99999)

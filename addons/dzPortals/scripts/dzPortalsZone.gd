@@ -1,3 +1,14 @@
+######################################################################
+#
+# Project           : dzPortals
+# Author            : Klaas Janneck
+# Date              : Aug 2020
+# Purpose           : Godot portal engine plugin
+# License           : MIT
+# contact           : kj@deck-zwei.de
+# Source at         : https://github.com/D2klaas/dzPortals
+#
+######################################################################
 tool
 extends Position3D
 #warning-ignore-all:unused_argument
@@ -18,10 +29,10 @@ var _polycount = 0
 var _viewportSprite
 var _whiteList
 
-signal area_entered
-signal area_exited
-signal area_shown
-signal area_hidden
+signal zone_entered
+signal zone_exited
+signal zone_shown
+signal zone_hidden
 
 export(bool) var disabled = false setget _set_disabled
 
@@ -29,6 +40,8 @@ func get_class():
 	return "dzPortalsZone"
 
 func _init():
+	# this is a bugfix for scnen initilization
+	# keep it or it will ruin the editor behaviour when subscenes will be instaced
 	_blackList = []
 
 func _ready():
@@ -36,9 +49,9 @@ func _ready():
 		set_notify_transform ( true )
 		_add_viewport_sprite()
 	add_to_group("dzPortalsZones")
-	register_blackList( )
+	_register_blackList( )
 
-
+#--------------------------- editor only
 func _add_viewport_sprite():
 	if _viewportSprite:
 		return
@@ -49,6 +62,7 @@ func _add_viewport_sprite():
 	_viewportSprite.material_override = load("res://addons/dzPortals/materials/iconZone.material")
 	_viewportSprite.texture = _viewportSprite.material_override.albedo_texture
 	add_child(_viewportSprite)
+	
 
 
 func _notification( what ):
@@ -62,24 +76,27 @@ func _process( delta ):
 		visible = _is_visible
 	if _is_visible != _is_visible_last_time:
 		if _is_visible:
-			emit_signal("area_shown")
+			emit_signal("zone_shown")
 		else:
-			emit_signal("area_hidden")
+			emit_signal("zone_hidden")
 	_is_visible_last_time = _is_visible
 
+# prepare this zone for visiblity calculation
 func do_prepare():
+	if disabled:
+		return
 	_is_processed = false
 	_is_active = false
 	_set_visible( false )
 
-
+#process this zone and its gates
 func do_portal():
 	if disabled:
 		return
 	if _is_active:
 		_set_visible( true )
 		if not _is_inside_last_time:
-			emit_signal("area_entered")
+			emit_signal("zone_entered")
 		_is_inside_last_time = true
 		for blackZone in blackList:
 			blackZone._is_active = false
@@ -88,15 +105,15 @@ func do_portal():
 		do_portal_gates()
 	else:
 		if _is_inside_last_time:
-			emit_signal("area_exited")
+			emit_signal("zone_exited")
 		_is_inside_last_time = false
 
 
 func do_inspector():
 	if _is_visible:
-		dzPortals.visible_zones += 1
+		dzPortals.inc_stat("visible_zones", 1)
 	else:
-		dzPortals.clipped_polys += _polycount
+		dzPortals.inc_stat("clipped_polys", _polycount)
 
 func do_portal_gates():
 	if _is_processed:
@@ -106,7 +123,7 @@ func do_portal_gates():
 	
 	if _is_visible:
 		for gate in _gates:
-			dzPortals.gates_processed += 1
+			dzPortals.inc_stat("gates_processed", 1)
 			
 			if gate._is_visible( self ):
 				gate.get_other_zone(self)._set_visible( true )
@@ -138,16 +155,16 @@ func _set_visible( value ):
 	_is_visible = value
 
 #------------------------------- tools
-func _auto_blacklist():
+func auto_blacklist():
 	_whiteList = []
 	for gate in _gates:
 		var z = gate.get_other_zone(self)
 		if z:
 			var pathList = [self]
 			pathList.append(gate)
-			z.__auto_blacklist(pathList)
+			z._auto_blacklist(pathList)
 
-func __auto_blacklist( pathList ):
+func _auto_blacklist( pathList ):
 #	__print_array(pathList)
 	
 	var firstGate = pathList[1]
@@ -177,7 +194,7 @@ func __auto_blacklist( pathList ):
 			
 			if _is_points_inside_gate(gate,iPoints):
 				firstZone.remove_blackList( self )
-				firstZone.add_whiteList( self )
+				firstZone._add_whiteList( self )
 			else:
 				if firstZone._whiteList.find(self) == -1:
 					firstZone.add_blackList( self )
@@ -201,7 +218,7 @@ func __auto_blacklist( pathList ):
 			
 			var _pathList = pathList.slice(0,pathList.size()-1)
 			_pathList.append(gate)
-			z.__auto_blacklist(_pathList)
+			z._auto_blacklist(_pathList)
 
 
 func _is_points_inside_gate( gate, iPoints ):
@@ -262,9 +279,9 @@ func __print_array(array):
 #-------------------- black/white list
 func _set_blackList( value ):
 	_blackList = value
-	register_blackList( )
+	_register_blackList( )
 
-func register_blackList( ):
+func _register_blackList( ):
 	blackList = []
 	for zonePath in _blackList:
 		if typeof(zonePath) == TYPE_NODE_PATH:
@@ -277,18 +294,18 @@ func add_blackList( zone ):
 	if _blackList.find(nodePath) != -1:
 		return
 	_blackList.append(nodePath)
-	register_blackList( )
+	_register_blackList( )
 	property_list_changed_notify()
 
 
 func remove_blackList( zone ):
 	var nodePath = get_path_to(zone)
 	_blackList.erase(nodePath)
-	register_blackList( )
+	_register_blackList( )
 	property_list_changed_notify()
 
 
-func add_whiteList( zone ):
+func _add_whiteList( zone ):
 	var nodePath = get_path_to(zone)
 	if _whiteList.find(nodePath) != -1:
 		return

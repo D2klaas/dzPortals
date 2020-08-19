@@ -1,3 +1,14 @@
+######################################################################
+#
+# Project           : dzPortals
+# Author            : Klaas Janneck
+# Date              : Aug 2020
+# Purpose           : Godot portal engine plugin
+# License           : MIT
+# contact           : kj@deck-zwei.de
+# Source at         : https://github.com/D2klaas/dzPortals
+#
+######################################################################
 tool
 extends Control
 #warning-ignore-all:unused_argument
@@ -21,6 +32,7 @@ func init():
 
 func _ready():
 	dzPortals.connect("stats_updated",self,"update")
+	dzPortals.process_stat = true
 
 func _on_RefreshPolycountButton_pressed():
 	var root = get_tree().get_edited_scene_root()
@@ -41,13 +53,13 @@ func count_poly( root ):
 
 func update():
 	if StatsList:
-		StatsList.set_item_text(1,str(dzPortals.visible_zones))
-		StatsList.set_item_text(3,str(dzPortals.gates_processed))
+		StatsList.set_item_text(1,str(dzPortals.get_stat("visible_zones")))
+		StatsList.set_item_text(3,str(dzPortals.get_stat("gates_processed")))
 		if polycount:
-			StatsList.set_item_text(5,str(dzPortals.clipped_polys)+" / "+str(round(dzPortals.clipped_polys / polycount * 100))+" %")
+			StatsList.set_item_text(5,str(dzPortals.get_stat("clipped_polys"))+" / "+str(round(dzPortals.get_stat("clipped_polys") / polycount * 100))+" %")
 		else:
 			StatsList.set_item_text(5,"-")
-		StatsList.set_item_text(7,str(dzPortals.processing_time)+" msec")
+		StatsList.set_item_text(7,str(dzPortals.get_stat("processing_time"))+" msec")
 
 
 func _set_owner_recursive(node,owner):
@@ -111,12 +123,12 @@ func createArea( node ):
 		area.connect("ready",area,"set_owner",[node],CONNECT_ONESHOT )
 	node.add_child(area)
 	area.translation = Vector3.ZERO
-	area._assign_to_parent()
+	area.assign_to_parent()
 
 	if node.get_class() == "dzPortalsZone":
-		area._resize_to_zone()
+		area.resize_to_zone()
 	if node.get_class() == "MeshInstance":
-		area._resize_to_mesh(node)
+		area.resize_to_mesh(node)
 
 
 func _on_CreateZonesAndAreas_pressed():
@@ -136,7 +148,8 @@ func _on_ConnectMagneticGates_pressed():
 	else:
 		nodes = get_tree().get_nodes_in_group("dzPortalsGates")
 	for node in nodes:
-		node._auto_find_magnetic_gate()
+		if node.get_class() == "dzPortalsGate":
+			node.auto_find_magnetic_gate()
 
 
 func _on_AutoDetectZones_pressed():
@@ -146,7 +159,8 @@ func _on_AutoDetectZones_pressed():
 	else:
 		nodes = get_tree().get_nodes_in_group("dzPortalsGates")
 	for node in nodes:
-		node._auto_connect_zones()
+		if node.get_class() == "dzPortalsGate":
+			node.auto_connect_zones()
 
 
 func _on_HideAreas_toggled(button_pressed):
@@ -173,13 +187,9 @@ func _on_AutoBlacklist_pressed():
 		nodes = dzPortals.plugin.get_editor_interface().get_selection().get_selected_nodes()
 	else:
 		nodes = get_tree().get_nodes_in_group("dzPortalsZones")
-	_on_autoBlacklist_zones( nodes )
-
-
-func _on_autoBlacklist_zones( nodes ):
 	for node in nodes:
 		if node.get_class() == "dzPortalsZone":
-			node._auto_blacklist()
+			node.auto_blacklist()
 
 
 func _on_ClearZoneBlacklists_pressed():
@@ -189,7 +199,9 @@ func _on_ClearZoneBlacklists_pressed():
 	else:
 		nodes = get_tree().get_nodes_in_group("dzPortalsZones")
 	for node in nodes:
-		node._set_blackList( [] )
+		if node.get_class() == "dzPortalsZone":
+			node._set_blackList( [] )
+			node.property_list_changed_notify()
 
 
 func _on_AsignToParent_pressed():
@@ -199,7 +211,8 @@ func _on_AsignToParent_pressed():
 	else:
 		nodes = get_tree().get_nodes_in_group("dzPortalsAreas")
 	for node in nodes:
-		node._assign_to_parent()
+		if node.get_class() == "dzPortalsArea":
+			node.assign_to_parent()
 
 
 func _on_ResizeToZone_pressed():
@@ -209,7 +222,8 @@ func _on_ResizeToZone_pressed():
 	else:
 		nodes = get_tree().get_nodes_in_group("dzPortalsAreas")
 	for node in nodes:
-		node._resize_to_zone()
+		if node.get_class() == "dzPortalsArea":
+			node.resize_to_zone()
 
 
 func _onlyOnSelected():

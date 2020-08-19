@@ -1,3 +1,14 @@
+######################################################################
+#
+# Project           : dzPortals
+# Author            : Klaas Janneck
+# Date              : Aug 2020
+# Purpose           : Godot portal engine plugin
+# License           : MIT
+# contact           : kj@deck-zwei.de
+# Source at         : https://github.com/D2klaas/dzPortals
+#
+######################################################################
 tool
 extends ImmediateGeometry
 #warning-ignore-all:unused_argument
@@ -6,19 +17,19 @@ const BLUE_SIDE = 1
 const RED_SIDE = 2
 
 export(Vector2) var dimensions = Vector2(1,1) setget _set_dimensions
-export(float) var margin = 0.05
+const margin = 0.05
 
 export(bool) var do_frustum_check = true
 
-export(NodePath) var _blue_zone setget _set_blue_zone
-export(NodePath) var _red_zone setget _set_red_zone
+export(NodePath) var _blue_zone setget set_blue_zone
+export(NodePath) var _red_zone setget set_red_zone
 
 export(bool) var is_magnetic = false
 export(bool) var auto_magnetic = false
 
-export var _magnetic_distance = 0.2
-export var _magnetic_angle = 0.1
-export var _magnetic_dimension = 0.1
+export var magnetic_distance = 0.2
+export var magnetic_angle = 0.1
+export var magnetic_dimension = 0.1
 
 export(NodePath) var _magnetic_gate setget _set_magnetic_gate
 var magnetic_gate
@@ -39,11 +50,11 @@ func _ready():
 	if Engine.editor_hint:
 		set_notify_transform ( true )
 		_add_viewport_sprite()
-	register_blue_zone()
-	register_red_zone()
+	_register_blue_zone()
+	_register_red_zone()
 	_set_dimensions(dimensions)
 	add_to_group("dzPortalsGates")
-	material_override = dzPortals._material_gate
+	material_override = load("res://addons/dzPortals/materials/gate.material")
 
 
 func _add_viewport_sprite():
@@ -61,13 +72,13 @@ func _add_viewport_sprite():
 func _notification( what ):
 	if what == Spatial.NOTIFICATION_TRANSFORM_CHANGED:
 		if is_magnetic and auto_magnetic:
-			_auto_find_magnetic_gate()
+			auto_find_magnetic_gate()
 		redraw()
 
 
 #----------------------------------- processing
 func go_prepare():
-	if disabled:
+	if is_disabled():
 		return
 	_plane = Plane(to_global(cornerPoints[1]),to_global(cornerPoints[0]),to_global(cornerPoints[2]))
 	pass
@@ -90,7 +101,7 @@ func get_side( vec ):
 
 
 func _is_invisible( vec, cam ):
-	if disabled:
+	if is_disabled():
 		return true
 	if _is_behind( vec, cam ):
 		return true
@@ -214,13 +225,14 @@ func _is_magnetic():
 
 func _set_magnetic_gate(value):
 	_magnetic_gate = value
-	register_magnetic_gate()
+	_register_magnetic_gate()
 
 
-func register_magnetic_gate():
+func _register_magnetic_gate():
 	if magnetic_gate:
 		magnetic_gate.remove_magnetic_gate( self )
-	magnetic_gate = get_node_or_null(_magnetic_gate)
+	if _magnetic_gate:
+		magnetic_gate = get_node_or_null(_magnetic_gate)
 	if not magnetic_gate:
 		return
 	if magnetic_gate.get_class() != "dzPortalsGate":
@@ -247,7 +259,7 @@ func remove_magnetic_gate( gate ):
 		mg.remove_magnetic_gate(self)
 
 
-func add_magnetic_gate( gate ):
+func set_magnetic_gate( gate ):
 	if red_zone and blue_zone:
 		return
 	
@@ -255,7 +267,7 @@ func add_magnetic_gate( gate ):
 	property_list_changed_notify()
 
 
-func _auto_find_magnetic_gate():
+func auto_find_magnetic_gate():
 	if not _is_magnetic():
 		return
 	var gates = get_tree().get_nodes_in_group("dzPortalsGates")
@@ -267,25 +279,32 @@ func _auto_find_magnetic_gate():
 			continue
 		if not gate._is_magnetic():
 			continue
-		if global_transform.origin.distance_to(gate.global_transform.origin) > _magnetic_distance:
+		if global_transform.origin.distance_to(gate.global_transform.origin) > magnetic_distance:
 			continue
 		var my_orientation = to_global(Vector3.FORWARD) - global_transform.origin
 		var gate_orientation = gate.to_global(Vector3.FORWARD) - gate.global_transform.origin
 		var off_orientation = my_orientation.angle_to(gate_orientation)
-		if off_orientation > _magnetic_angle and off_orientation < PI - _magnetic_angle:
+		if off_orientation > magnetic_angle and off_orientation < PI - magnetic_angle:
 			continue
-		if abs(dimensions.x - gate.dimensions.x) > _magnetic_dimension:
+		if abs(dimensions.x - gate.dimensions.x) > magnetic_dimension:
 			continue
-		if abs(dimensions.y - gate.dimensions.y) > _magnetic_dimension:
+		if abs(dimensions.y - gate.dimensions.y) > magnetic_dimension:
 			continue
-		add_magnetic_gate(gate)
-		gate.add_magnetic_gate(self)
+		set_magnetic_gate(gate)
+		gate.set_magnetic_gate(self)
 
 
 #----------------------------------- disabled
 func _set_disabled(value):
 	disabled = value
 	redraw()
+
+
+func is_disabled():
+	if disabled:
+		return true
+	if is_magnetic and magnetic_gate and magnetic_gate.disabled:
+		return true
 
 #----------------------------------- set zones
 func get_red_zone():
@@ -302,12 +321,12 @@ func get_blue_zone():
 		return magnetic_gate.get_magnetic_zone()
 
 
-func _set_blue_zone( value ):
+func set_blue_zone( value ):
 	_blue_zone = value
-	register_blue_zone()
+	_register_blue_zone()
 
 
-func register_blue_zone():
+func _register_blue_zone():
 	if blue_zone:
 		blue_zone.remove_gate( self )
 	blue_zone = get_node_or_null(_blue_zone)
@@ -324,12 +343,12 @@ func register_blue_zone():
 	redraw()
 
 
-func _set_red_zone( value ):
+func set_red_zone( value ):
 	_red_zone = value
-	register_red_zone()
+	_register_red_zone()
 
 
-func register_red_zone():
+func _register_red_zone():
 	if red_zone:
 		red_zone.remove_gate( self )
 	red_zone = get_node_or_null(_red_zone)
@@ -347,7 +366,7 @@ func register_red_zone():
 
 
 func _is_visible( zone ):
-	if disabled:
+	if is_disabled():
 		return false
 	if not get_red_zone() or not get_blue_zone():
 		return false
@@ -417,7 +436,7 @@ func redraw():
 	add_vertex(Vector3( d.x, d.y, margin))
 	end()
 	
-	var pointerWidth = 0.05
+	var pointerWidth = 0.15
 	if red_zone:
 		begin(Mesh.PRIMITIVE_TRIANGLES)
 		if disabled:
@@ -460,14 +479,14 @@ func redraw():
 
 
 #-------------------------------------- tools
-func _auto_connect_zones():
+func auto_connect_zones():
 	var areas = get_tree().get_nodes_in_group("dzPortalsAreas")
 	for area in areas:
 		if area.is_inside( global_transform.origin ):
 			if get_side( area.zone.global_transform.origin ) == BLUE_SIDE:
-				_set_blue_zone( get_path_to(area.zone))
+				set_blue_zone( get_path_to(area.zone))
 			else:
-				_set_red_zone( get_path_to(area.zone))
+				set_red_zone( get_path_to(area.zone))
 	property_list_changed_notify()
 
 
