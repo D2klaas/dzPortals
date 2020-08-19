@@ -13,6 +13,6 @@ Portal engines are mostly usefull for indoor scenes or outdoor scenes with many 
 ## How to use it?
 Check out the docs. They provide installation notes, a basic explanation of components and api documentation.
 * [Installation](docs/documentation.md#installation)
-* [Basics](docs/documentation.md##basic-workings)
+* [Basics](docs/documentation.md#basic-workings)
 * [API](docs/documentation.md#api)
 
