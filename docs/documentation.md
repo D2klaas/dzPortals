@@ -40,6 +40,12 @@ Areas should enclose all of the visual instances in the zone. You can have as ma
 * blackList: Array of nodePath's. When the camera is in this area any nodes defined in here will be immediately culled and excluded from any further processing.
 * disabled: area gets excluded from calculation.
 
+<img width="225" src="screens/area-highlight.PNG">
+*when the camera enters an area the zone areas turn green*
+
+<img width="225" src="screens/area-highlight2.PNG">
+*zone areas that are visible through a gate will turn green*
+
 
 ## Gate
 <img width="225" height="225" alt="Gate Gizmo in editor" src="screens/gate-icon.PNG"> 
@@ -59,6 +65,10 @@ Gates can connect two zones via setting them directly or can be defined as magne
 * magnetic dimension: the max difference of the gates dimensions for magnetic snapping
 * magnetic gaze: the nodePath to the magnetic snapped gate
 * disabled: gate gets excluded from calculation. The gate will not activate the zone connected to it. Usefull when a door, portal etc. is closed. When a visual instance is blocking the sight through the gate you can turn off the gate. This will prevent the zone behinde the gate to be rendered.
+
+<img width="225" src="screens/area-screen.PNG">
+*gates have a red and a blue side, the spikes point to the connected zone*
+
 
 ## dzPortals Inspector
 On the bottom menu you find the dzPortlas Inspector with many usefull tools to help you build your portals  system.
