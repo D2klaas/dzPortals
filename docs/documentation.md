@@ -3,6 +3,7 @@
 * [Installation](#installation)
 * [Basics](#basic-workings)
 * [API](#api)
+ * [dzPortals](#dzportals)
  * [dzPortalsZone](#dzportalszone)
  * [dzPortalsArea](#dzportalsarea)
  * [dzPortalsGate](#dzportalsgate)
@@ -146,6 +147,12 @@ void **remove_blackList( zone: dzPortalsZone )**
 **zone_hidden**
 *whenever the zone gets invisible*
 
+
+### dzPortalsArea
+
+#### Methodes
+dzPortalsGate **get_nearest_gate( Vector3 )**  
+*Returns the nearest gate to vector3 in global space*
 
 ### dzPortalsArea
 
