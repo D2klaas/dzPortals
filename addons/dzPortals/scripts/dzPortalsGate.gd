@@ -34,7 +34,7 @@ export var magnetic_dimension = 0.1
 export(NodePath) var _magnetic_gate setget _set_magnetic_gate
 var magnetic_gate
 
-export(bool) var disabled = false setget _set_disabled
+export(bool) var disabled = false setget _set_disabled,_get_disabled
 
 var blue_zone
 var red_zone
@@ -78,7 +78,7 @@ func _notification( what ):
 
 #----------------------------------- processing
 func go_prepare():
-	if is_disabled():
+	if disabled:
 		return
 	_plane = Plane(to_global(cornerPoints[1]),to_global(cornerPoints[0]),to_global(cornerPoints[2]))
 	pass
@@ -101,7 +101,7 @@ func get_side( vec ):
 
 
 func _is_invisible( vec, cam ):
-	if is_disabled():
+	if disabled:
 		return true
 	if _is_behind( vec, cam ):
 		return true
@@ -300,11 +300,12 @@ func _set_disabled(value):
 	redraw()
 
 
-func is_disabled():
+func _get_disabled():
 	if disabled:
 		return true
 	if is_magnetic and magnetic_gate and magnetic_gate.disabled:
 		return true
+	return false
 
 #----------------------------------- set zones
 func get_red_zone():
@@ -366,7 +367,7 @@ func _register_red_zone():
 
 
 func _is_visible( zone ):
-	if is_disabled():
+	if disabled:
 		return false
 	if not get_red_zone() or not get_blue_zone():
 		return false
