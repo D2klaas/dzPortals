@@ -1,0 +1,275 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/dzPortals/controls/scripts/dzPortalsControl.gd" type="Script" id=1]
+
+[node name="Control" type="Control"]
+anchor_right = 1.0
+rect_min_size = Vector2( 0, 200 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_horizontal_guides_": [ -94.0 ],
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TabContainer" type="TabContainer" parent="HBoxContainer"]
+margin_right = 1024.0
+margin_bottom = 200.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+tab_align = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Stats" type="PanelContainer" parent="HBoxContainer/TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/TabContainer/Stats"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1009.0
+margin_bottom = 157.0
+custom_constants/separation = 10
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/TabContainer/Stats/HBoxContainer"]
+margin_right = 496.0
+margin_bottom = 150.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="StatsList" type="ItemList" parent="HBoxContainer/TabContainer/Stats/HBoxContainer/ScrollContainer"]
+margin_right = 496.0
+margin_bottom = 150.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+items = [ "visible zones ", null, false, "0", null, false, "gates processed ", null, false, "0", null, false, "visible zones ", null, false, "0", null, false, "gates processed ", null, false, "0", null, false ]
+max_text_lines = 4
+max_columns = 2
+same_column_width = true
+
+[node name="ScrollContainer2" type="ScrollContainer" parent="HBoxContainer/TabContainer/Stats/HBoxContainer"]
+margin_left = 506.0
+margin_right = 1002.0
+margin_bottom = 150.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/TabContainer/Stats/HBoxContainer/ScrollContainer2"]
+margin_right = 154.0
+margin_bottom = 20.0
+
+[node name="RefreshPolycountButton" type="Button" parent="HBoxContainer/TabContainer/Stats/HBoxContainer/ScrollContainer2/VBoxContainer"]
+margin_right = 154.0
+margin_bottom = 20.0
+text = "Refresh polygon count"
+
+[node name="Tools" type="PanelContainer" parent="HBoxContainer/TabContainer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/TabContainer/Tools"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1009.0
+margin_bottom = 157.0
+custom_constants/separation = 20
+
+[node name="VBoxCreate" type="VBoxContainer" parent="HBoxContainer/TabContainer/Tools/HBoxContainer"]
+margin_right = 283.0
+margin_bottom = 150.0
+custom_constants/separation = 10
+
+[node name="Label" type="Label" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxCreate"]
+margin_right = 283.0
+margin_bottom = 14.0
+text = "Create"
+align = 1
+uppercase = true
+
+[node name="CreateZones" type="Button" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxCreate"]
+margin_top = 24.0
+margin_right = 283.0
+margin_bottom = 44.0
+text = "Create zones for selected nodes"
+
+[node name="CreateAreas" type="Button" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxCreate"]
+margin_top = 54.0
+margin_right = 283.0
+margin_bottom = 74.0
+text = "Create areas for selected zones"
+
+[node name="CreateZonesAndAreas" type="Button" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxCreate"]
+margin_top = 84.0
+margin_right = 283.0
+margin_bottom = 104.0
+text = "Create zones and areas for selected nodes"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/TabContainer/Tools/HBoxContainer"]
+margin_left = 303.0
+margin_right = 1002.0
+margin_bottom = 150.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Container" type="HBoxContainer" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer"]
+margin_right = 699.0
+margin_bottom = 92.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxGates" type="VBoxContainer" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container"]
+margin_right = 230.0
+margin_bottom = 92.0
+size_flags_horizontal = 3
+custom_constants/separation = 10
+
+[node name="Label2" type="Label" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container/VBoxGates"]
+margin_right = 230.0
+margin_bottom = 14.0
+text = "Gates"
+align = 1
+uppercase = true
+
+[node name="ConnectMagneticGates" type="Button" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container/VBoxGates"]
+margin_top = 24.0
+margin_right = 230.0
+margin_bottom = 44.0
+text = "Connect magnetic gates"
+
+[node name="AutoDetectZones" type="Button" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container/VBoxGates"]
+margin_top = 54.0
+margin_right = 230.0
+margin_bottom = 74.0
+text = "Auto detect zones"
+
+[node name="VBoxAreas" type="VBoxContainer" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container"]
+margin_left = 234.0
+margin_right = 464.0
+margin_bottom = 92.0
+size_flags_horizontal = 3
+custom_constants/separation = 10
+
+[node name="Label2" type="Label" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container/VBoxAreas"]
+margin_right = 230.0
+margin_bottom = 14.0
+text = "Areas"
+align = 1
+uppercase = true
+
+[node name="AsignToParent" type="Button" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container/VBoxAreas"]
+margin_top = 24.0
+margin_right = 230.0
+margin_bottom = 44.0
+text = "Assign to parent zone"
+
+[node name="ResizeToZone" type="Button" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container/VBoxAreas"]
+margin_top = 54.0
+margin_right = 230.0
+margin_bottom = 74.0
+text = "Resize to zone"
+
+[node name="VBoxZones" type="VBoxContainer" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container"]
+margin_left = 468.0
+margin_right = 699.0
+margin_bottom = 92.0
+size_flags_horizontal = 3
+custom_constants/separation = 10
+
+[node name="Label3" type="Label" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container/VBoxZones"]
+margin_right = 231.0
+margin_bottom = 14.0
+text = "Zones"
+align = 1
+uppercase = true
+
+[node name="AutoBlacklist" type="Button" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container/VBoxZones"]
+margin_top = 24.0
+margin_right = 231.0
+margin_bottom = 44.0
+text = "auto blacklist zones"
+
+[node name="ClearZoneBlacklists" type="Button" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container/VBoxZones"]
+margin_top = 54.0
+margin_right = 231.0
+margin_bottom = 74.0
+text = "clear zone blacklists"
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer"]
+margin_top = 96.0
+margin_right = 699.0
+margin_bottom = 150.0
+size_flags_horizontal = 9
+size_flags_vertical = 0
+
+[node name="onlyOnSelectedNodes" type="CheckButton" parent="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/PanelContainer"]
+margin_left = 408.0
+margin_top = 7.0
+margin_right = 692.0
+margin_bottom = 47.0
+size_flags_horizontal = 8
+pressed = true
+text = "execute only on selected nodes"
+align = 2
+
+[node name="Visibility" type="PanelContainer" parent="HBoxContainer/TabContainer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/TabContainer/Visibility"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1009.0
+margin_bottom = 157.0
+custom_constants/separation = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/TabContainer/Visibility/HBoxContainer"]
+margin_right = 96.0
+margin_bottom = 150.0
+custom_constants/separation = 10
+
+[node name="HideAreas" type="CheckBox" parent="HBoxContainer/TabContainer/Visibility/HBoxContainer/VBoxContainer"]
+margin_right = 96.0
+margin_bottom = 24.0
+text = "Hide areas"
+
+[node name="HideGates" type="CheckBox" parent="HBoxContainer/TabContainer/Visibility/HBoxContainer/VBoxContainer"]
+margin_top = 34.0
+margin_right = 96.0
+margin_bottom = 58.0
+text = "Hide gates"
+[connection signal="pressed" from="HBoxContainer/TabContainer/Stats/HBoxContainer/ScrollContainer2/VBoxContainer/RefreshPolycountButton" to="." method="_on_RefreshPolycountButton_pressed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxCreate/CreateZones" to="." method="_on_CreateZones_pressed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxCreate/CreateAreas" to="." method="_on_CreateAreas_pressed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxCreate/CreateZonesAndAreas" to="." method="_on_CreateZonesAndAreas_pressed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container/VBoxGates/ConnectMagneticGates" to="." method="_on_ConnectMagneticGates_pressed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container/VBoxGates/AutoDetectZones" to="." method="_on_AutoDetectZones_pressed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container/VBoxAreas/AsignToParent" to="." method="_on_AsignToParent_pressed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container/VBoxAreas/ResizeToZone" to="." method="_on_ResizeToZone_pressed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container/VBoxZones/AutoBlacklist" to="." method="_on_AutoBlacklist_pressed"]
+[connection signal="pressed" from="HBoxContainer/TabContainer/Tools/HBoxContainer/VBoxContainer/Container/VBoxZones/ClearZoneBlacklists" to="." method="_on_ClearZoneBlacklists_pressed"]
+[connection signal="toggled" from="HBoxContainer/TabContainer/Visibility/HBoxContainer/VBoxContainer/HideAreas" to="." method="_on_HideAreas_toggled"]
+[connection signal="toggled" from="HBoxContainer/TabContainer/Visibility/HBoxContainer/VBoxContainer/HideGates" to="." method="_on_HideGates_toggled"]

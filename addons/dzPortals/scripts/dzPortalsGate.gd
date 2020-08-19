@@ -13,20 +13,32 @@ export(bool) var do_frustum_check = true
 export(NodePath) var _blue_zone setget _set_blue_zone
 export(NodePath) var _red_zone setget _set_red_zone
 
-export(bool) var auto_detect_zones = false setget _auto_detect_zones
+export(bool) var is_magnetic = false
+export(bool) var auto_magnetic = false
 
-export var debug= []
+export var _magnetic_distance = 0.2
+export var _magnetic_angle = 0.1
+export var _magnetic_dimension = 0.1
+
+export(NodePath) var _magnetic_gate setget _set_magnetic_gate
+var magnetic_gate
+
+export(bool) var disabled = false setget _set_disabled
 
 var blue_zone
 var red_zone
 
 var cornerPoints = []
 var _plane
+var _viewportSprite
 
 func get_class():
 	return "dzPortalsGate"
 
 func _ready():
+	if Engine.editor_hint:
+		set_notify_transform ( true )
+		_add_viewport_sprite()
 	register_blue_zone()
 	register_red_zone()
 	_set_dimensions(dimensions)
@@ -34,8 +46,29 @@ func _ready():
 	material_override = dzPortals._material_gate
 
 
+func _add_viewport_sprite():
+	if _viewportSprite:
+		return
+	_viewportSprite = Sprite3D.new()
+	_viewportSprite.pixel_size = 0.0004
+	_viewportSprite.offset.y = 100
+	_viewportSprite.cast_shadow = false
+	_viewportSprite.material_override = load("res://addons/dzPortals/materials/iconGate.material")
+	_viewportSprite.texture = _viewportSprite.material_override.albedo_texture
+	add_child(_viewportSprite)
+
+
+func _notification( what ):
+	if what == Spatial.NOTIFICATION_TRANSFORM_CHANGED:
+		if is_magnetic and auto_magnetic:
+			_auto_find_magnetic_gate()
+		redraw()
+
+
 #----------------------------------- processing
 func go_prepare():
+	if disabled:
+		return
 	_plane = Plane(to_global(cornerPoints[1]),to_global(cornerPoints[0]),to_global(cornerPoints[2]))
 	pass
 
@@ -44,7 +77,7 @@ func go_portal():
 	pass
 
 
-func do_camera():
+func do_inspector():
 	pass
 
 
@@ -57,6 +90,8 @@ func get_side( vec ):
 
 
 func _is_invisible( vec, cam ):
+	if disabled:
+		return true
 	if _is_behind( vec, cam ):
 		return true
 	
@@ -129,6 +164,30 @@ func _is_position_behind( vec, cam ):
 	return plane.is_point_over(vec)
 
 
+#----------------------------------- planes
+func get_red_plane():
+	var plane = Plane(to_global(Vector3(0,0,0)),to_global(Vector3(1,1,0)),to_global(Vector3(1,0,0)))
+	return plane
+
+
+func get_blue_plane():
+	var plane = Plane(to_global(Vector3(0,0,0)),to_global(Vector3(1,-1,0)),to_global(Vector3(1,0,0)))
+	return plane
+
+
+func get_zone_facing_plane(zone):
+	if zone == get_red_zone():
+		return get_red_plane()
+	if zone == get_blue_zone():
+		return get_blue_plane()
+
+func get_zone_averted_plane(zone):
+	if zone == get_red_zone():
+		return get_blue_plane()
+	if zone == get_blue_zone():
+		return get_red_plane()
+
+
 #----------------------------------- set dimensions
 func _set_dimensions( value ):
 	dimensions = value
@@ -141,8 +200,108 @@ func _set_dimensions( value ):
 	]
 	redraw()
 
+func get_global_corner(id):
+	return.to_global(cornerPoints[id])
+	
+
+#----------------------------------- magnets
+func _is_magnetic():
+	if not is_magnetic:
+		return false
+	if red_zone and blue_zone:
+		return false
+	return true
+
+func _set_magnetic_gate(value):
+	_magnetic_gate = value
+	register_magnetic_gate()
+
+
+func register_magnetic_gate():
+	if magnetic_gate:
+		magnetic_gate.remove_magnetic_gate( self )
+	magnetic_gate = get_node_or_null(_magnetic_gate)
+	if not magnetic_gate:
+		return
+	if magnetic_gate.get_class() != "dzPortalsGate":
+		magnetic_gate = null
+		_magnetic_gate = ""
+		redraw()
+		return
+
+
+func get_magnetic_zone():
+	if not blue_zone:
+		return red_zone
+	if not red_zone:
+		return blue_zone
+
+
+func remove_magnetic_gate( gate ):
+	if not magnetic_gate:
+		return
+	if magnetic_gate == gate:
+		var mg = magnetic_gate
+		_magnetic_gate = null
+		magnetic_gate = null
+		mg.remove_magnetic_gate(self)
+
+
+func add_magnetic_gate( gate ):
+	if red_zone and blue_zone:
+		return
+	
+	_set_magnetic_gate( get_path_to(gate) )
+	property_list_changed_notify()
+
+
+func _auto_find_magnetic_gate():
+	if not _is_magnetic():
+		return
+	var gates = get_tree().get_nodes_in_group("dzPortalsGates")
+	
+	remove_magnetic_gate( magnetic_gate )
+	
+	for gate in gates:
+		if gate == self:
+			continue
+		if not gate._is_magnetic():
+			continue
+		if global_transform.origin.distance_to(gate.global_transform.origin) > _magnetic_distance:
+			continue
+		var my_orientation = to_global(Vector3.FORWARD) - global_transform.origin
+		var gate_orientation = gate.to_global(Vector3.FORWARD) - gate.global_transform.origin
+		var off_orientation = my_orientation.angle_to(gate_orientation)
+		if off_orientation > _magnetic_angle and off_orientation < PI - _magnetic_angle:
+			continue
+		if abs(dimensions.x - gate.dimensions.x) > _magnetic_dimension:
+			continue
+		if abs(dimensions.y - gate.dimensions.y) > _magnetic_dimension:
+			continue
+		add_magnetic_gate(gate)
+		gate.add_magnetic_gate(self)
+
+
+#----------------------------------- disabled
+func _set_disabled(value):
+	disabled = value
+	redraw()
 
 #----------------------------------- set zones
+func get_red_zone():
+	if red_zone:
+		return red_zone
+	elif magnetic_gate:
+		return magnetic_gate.get_magnetic_zone()
+
+
+func get_blue_zone():
+	if blue_zone:
+		return blue_zone
+	elif magnetic_gate:
+		return magnetic_gate.get_magnetic_zone()
+
+
 func _set_blue_zone( value ):
 	_blue_zone = value
 	register_blue_zone()
@@ -188,10 +347,12 @@ func register_red_zone():
 
 
 func _is_visible( zone ):
-	if not red_zone or not blue_zone:
+	if disabled:
+		return false
+	if not get_red_zone() or not get_blue_zone():
 		return false
 	var camera = get_viewport().get_camera()
-	if zone == red_zone:
+	if zone == get_red_zone():
 		if _is_invisible( global_transform.origin, camera ):
 				return false
 		if _is_behind( camera.global_transform.origin, self ):
@@ -206,10 +367,10 @@ func _is_visible( zone ):
 
 
 func get_other_zone( zone ):
-	if zone == red_zone:
-		return blue_zone
+	if zone == get_red_zone():
+		return get_blue_zone()
 	else:
-		return red_zone
+		return get_red_zone()
 
 
 func redraw():
@@ -219,27 +380,50 @@ func redraw():
 	var d = dimensions / 2.0
 	
 	clear()
+	
 	begin(Mesh.PRIMITIVE_TRIANGLES)
-	set_color(Color(1,0,0,0.5))
+	if disabled:
+		set_color(Color(0.5,0.5,0.5,0.5))
+	else:
+		set_color(Color(1,0,0,0.5))
+	set_uv(Vector2( d.x, d.y))
 	add_vertex(Vector3( d.x, d.y,-margin))
+	set_uv(Vector2(-d.x, d.y))
 	add_vertex(Vector3(-d.x, d.y,-margin))
+	set_uv(Vector2(-d.x,-d.y))
 	add_vertex(Vector3(-d.x,-d.y,-margin))
+	set_uv(Vector2(-d.x,-d.y))
 	add_vertex(Vector3(-d.x,-d.y,-margin))
+	set_uv(Vector2( d.x,-d.y))
 	add_vertex(Vector3( d.x,-d.y,-margin))
+	set_uv(Vector2( d.x, d.y))
 	add_vertex(Vector3( d.x, d.y,-margin))
-	set_color(Color(0,0,1,0.5))
+
+	if disabled:
+		set_color(Color(0.5,0.5,0.5,0.5))
+	else:
+		set_color(Color(0,0,1,0.5))
+	set_uv(Vector2(-d.x, d.y))
 	add_vertex(Vector3(-d.x, d.y, margin))
+	set_uv(Vector2( d.x, d.y))
 	add_vertex(Vector3( d.x, d.y, margin))
+	set_uv(Vector2(-d.x,-d.y))
 	add_vertex(Vector3(-d.x,-d.y, margin))
+	set_uv(Vector2( d.x,-d.y))
 	add_vertex(Vector3( d.x,-d.y, margin))
+	set_uv(Vector2(-d.x,-d.y))
 	add_vertex(Vector3(-d.x,-d.y, margin))
+	set_uv(Vector2( d.x, d.y))
 	add_vertex(Vector3( d.x, d.y, margin))
 	end()
 	
 	var pointerWidth = 0.05
 	if red_zone:
 		begin(Mesh.PRIMITIVE_TRIANGLES)
-		set_color(Color(1,0,0,0.5))
+		if disabled:
+			set_color(Color(0.5,0.5,0.5,0.5))
+		else:
+			set_color(Color(1,0,0,0.5))
 		add_vertex(Vector3( 1, -1, 0) * pointerWidth)
 		add_vertex(Vector3( 1, 1, 0) * pointerWidth)
 		add_vertex(to_local(red_zone.global_transform.origin))
@@ -256,7 +440,10 @@ func redraw():
 
 	if blue_zone:
 		begin(Mesh.PRIMITIVE_TRIANGLES)
-		set_color(Color(0,0,1,0.5))
+		if disabled:
+			set_color(Color(0.5,0.5,0.5,0.5))
+		else:
+			set_color(Color(0,0,1,0.5))
 		add_vertex(Vector3( 1, 1, 0) * pointerWidth)
 		add_vertex(Vector3( 1, -1, 0) * pointerWidth)
 		add_vertex(to_local(blue_zone.global_transform.origin))
@@ -271,24 +458,9 @@ func redraw():
 		add_vertex(to_local(blue_zone.global_transform.origin))
 		end()
 
-	if red_zone:
-		begin(Mesh.PRIMITIVE_LINES)
-		set_color(Color(1,0,0,0.5))
-		add_vertex(Vector3( 0, 0,0))
-		add_vertex(to_local(red_zone.global_transform.origin))
-		end()
-
-	if blue_zone:
-		begin(Mesh.PRIMITIVE_LINES)
-		set_color(Color(0,0,1,0.5))
-		add_vertex(Vector3( 0, 0,0))
-		add_vertex(to_local(blue_zone.global_transform.origin))
-		end()
 
 #-------------------------------------- tools
-func _auto_detect_zones(value):
-	if value == false:
-		return
+func _auto_connect_zones():
 	var areas = get_tree().get_nodes_in_group("dzPortalsAreas")
 	for area in areas:
 		if area.is_inside( global_transform.origin ):
@@ -297,3 +469,5 @@ func _auto_detect_zones(value):
 			else:
 				_set_red_zone( get_path_to(area.zone))
 	property_list_changed_notify()
+
+

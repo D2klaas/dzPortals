@@ -11,30 +11,46 @@ var zone
 export var _blackList = [] setget _set_blackList
 var blackList = []
 
-export(bool) var asign_to_parent = false setget _assign_to_parent
-export(bool) var resize_to_mesh = false setget _resize_to_mesh
+
+export(bool) var disabled = false setget _set_disabled
 
 var _is_inside_last_time = false
+var _viewportSprite
 
 signal area_entered
 signal area_exited
 
-func _set( property, value ):
-	set( property, value )
-	redraw()
 
 #---------------------------------------- processing
 func _ready():
+	if Engine.editor_hint:
+		_add_viewport_sprite()
+
 	register_zone( )
 	register_blackList( )
-	material_override = dzPortals._material_area
+	material_override =  load("res://addons/dzPortals/materials/area.material")
 	add_to_group("dzPortalsAreas")
+
+
+func _add_viewport_sprite():
+	if _viewportSprite:
+		return
+	_viewportSprite = Sprite3D.new()
+	_viewportSprite.pixel_size = 0.0004
+	_viewportSprite.offset.y = 100
+	_viewportSprite.cast_shadow = false
+	_viewportSprite.material_override = load("res://addons/dzPortals/materials/iconArea.material")
+	_viewportSprite.texture = _viewportSprite.material_override.albedo_texture
+	add_child(_viewportSprite)
+
 
 func do_prepare():
 	pass
 
 
 func do_portal():
+	if disabled:
+		return
 	if zone:
 		var camera = get_viewport().get_camera()
 		if not camera:
@@ -54,8 +70,14 @@ func do_portal():
 				_is_inside_last_time = false
 
 
-func do_camera():
+func do_inspector():
 	pass
+
+#
+#func _hide_gizmo( state ):
+#	_gizmo_hidden = state
+#	redraw()
+
 
 #-------------------------------- black list
 func _set_blackList( value ):
@@ -70,6 +92,10 @@ func register_blackList( ):
 			if new_zone and new_zone.get_class() == "dzPortalsZone":
 				blackList.append(new_zone)
 
+#----------------------------------- disabled
+func _set_disabled(value):
+	disabled = value
+	redraw()
 
 #-------------------------------- zone
 func _set_zone( value ):
@@ -123,6 +149,8 @@ func is_inside_cylinder( vec ):
 
 #-------------------------------- drawing
 func getDrawColor():
+	if disabled:
+		return Color(0.5,0.5,0.5,0.25)
 	if zone and zone._is_visible:
 		return Color(0,1,0,0.25)
 	else:
@@ -134,6 +162,7 @@ func setDrawColor():
 
 var _last_color
 var _last_shape
+var _last_dimensions
 
 func _process(delta):
 	if not Engine.editor_hint:
@@ -144,6 +173,9 @@ func _process(delta):
 		update = true
 	if _last_shape != shape:
 		_last_shape = shape
+		update = true
+	if _last_dimensions != dimensions:
+		_last_dimensions = dimensions
 		update = true
 	if update:
 		redraw()
@@ -168,47 +200,83 @@ func redraw():
 func drawBox( d ):
 	begin(Mesh.PRIMITIVE_TRIANGLES)
 	setDrawColor()
-
+	
+	set_uv(Vector2( d.x, d.y))
 	add_vertex(Vector3( d.x, d.y, d.z))
+	set_uv(Vector2(-d.x, d.y))
 	add_vertex(Vector3(-d.x, d.y, d.z))
+	set_uv(Vector2(-d.x,-d.y))
 	add_vertex(Vector3(-d.x, d.y,-d.z))
+	set_uv(Vector2(-d.x,-d.y))
 	add_vertex(Vector3(-d.x, d.y,-d.z))
+	set_uv(Vector2( d.x,-d.y))
 	add_vertex(Vector3( d.x, d.y,-d.z))
+	set_uv(Vector2( d.x, d.y))
 	add_vertex(Vector3( d.x, d.y, d.z))
 	
+	set_uv(Vector2(-d.x, d.y))
 	add_vertex(Vector3(-d.x,-d.y, d.z))
+	set_uv(Vector2( d.x, d.y))
 	add_vertex(Vector3( d.x,-d.y, d.z))
+	set_uv(Vector2(-d.x,-d.y))
 	add_vertex(Vector3(-d.x,-d.y,-d.z))
+	set_uv(Vector2( d.x,-d.y))
 	add_vertex(Vector3( d.x,-d.y,-d.z))
+	set_uv(Vector2(-d.x,-d.y))
 	add_vertex(Vector3(-d.x,-d.y,-d.z))
+	set_uv(Vector2( d.x, d.y))
 	add_vertex(Vector3( d.x,-d.y, d.z))
 	
+	set_uv(Vector2( d.x, d.y))
 	add_vertex(Vector3( d.x, d.y,-d.z))
+	set_uv(Vector2(-d.x, d.y))
 	add_vertex(Vector3(-d.x, d.y,-d.z))
+	set_uv(Vector2(-d.x,-d.y))
 	add_vertex(Vector3(-d.x,-d.y,-d.z))
+	set_uv(Vector2(-d.x,-d.y))
 	add_vertex(Vector3(-d.x,-d.y,-d.z))
+	set_uv(Vector2( d.x,-d.y))
 	add_vertex(Vector3( d.x,-d.y,-d.z))
+	set_uv(Vector2( d.x, d.y))
 	add_vertex(Vector3( d.x, d.y,-d.z))
 	
+	set_uv(Vector2(-d.x, d.y))
 	add_vertex(Vector3(-d.x, d.y, d.z))
+	set_uv(Vector2( d.x, d.y))
 	add_vertex(Vector3( d.x, d.y, d.z))
+	set_uv(Vector2(-d.x,-d.y))
 	add_vertex(Vector3(-d.x,-d.y, d.z))
+	set_uv(Vector2( d.x,-d.y))
 	add_vertex(Vector3( d.x,-d.y, d.z))
+	set_uv(Vector2(-d.x,-d.y))
 	add_vertex(Vector3(-d.x,-d.y, d.z))
+	set_uv(Vector2( d.x, d.y))
 	add_vertex(Vector3( d.x, d.y, d.z))
 	
+	set_uv(Vector2( d.x, d.y))
 	add_vertex(Vector3( d.x, d.y, d.z))
+	set_uv(Vector2( d.x,-d.y))
 	add_vertex(Vector3( d.x, d.y,-d.z))
+	set_uv(Vector2(-d.x,-d.y))
 	add_vertex(Vector3( d.x,-d.y,-d.z))
+	set_uv(Vector2(-d.x,-d.y))
 	add_vertex(Vector3( d.x,-d.y,-d.z))
+	set_uv(Vector2(-d.x, d.y))
 	add_vertex(Vector3( d.x,-d.y, d.z))
+	set_uv(Vector2( d.x, d.y))
 	add_vertex(Vector3( d.x, d.y, d.z))
 	
+	set_uv(Vector2( d.x,-d.y))
 	add_vertex(Vector3(-d.x, d.y,-d.z))
+	set_uv(Vector2( d.x, d.y))
 	add_vertex(Vector3(-d.x, d.y, d.z))
+	set_uv(Vector2(-d.x,-d.y))
 	add_vertex(Vector3(-d.x,-d.y,-d.z))
+	set_uv(Vector2(-d.x, d.y))
 	add_vertex(Vector3(-d.x,-d.y, d.z))
+	set_uv(Vector2(-d.x,-d.y))
 	add_vertex(Vector3(-d.x,-d.y,-d.z))
+	set_uv(Vector2( d.x, d.y))
 	add_vertex(Vector3(-d.x, d.y, d.z))
 	
 	end()
@@ -225,6 +293,7 @@ func drawCylinder( sides, r, h):
 	for i in range(0,sides):
 		var x = cos( ( i * angle ) ) * r;
 		var y = sin( ( i * angle ) ) * r;
+		set_uv(Vector2(x,y))
 		add_vertex( Vector3(x, -halfHeight, y))
 	end()
 	
@@ -234,6 +303,7 @@ func drawCylinder( sides, r, h):
 	for i in range(0,sides):
 		var x = cos( ( i * angle ) ) * r
 		var y = sin( ( i * angle ) ) * r
+		set_uv(Vector2(x,y))
 		add_vertex( Vector3(x, halfHeight, y))
 	end()
 	
@@ -243,7 +313,9 @@ func drawCylinder( sides, r, h):
 	for i in range(0,sides):
 		var x = cos( ( i * angle ) ) * r;
 		var y = sin( ( i * angle ) ) * r;
+		set_uv(Vector2(i, halfHeight))
 		add_vertex( Vector3(x, halfHeight, y))
+		set_uv(Vector2(i,-halfHeight))
 		add_vertex( Vector3(x, -halfHeight, y))
 	end()
 
@@ -256,9 +328,7 @@ func drawSphere( d ):
 
 
 #----------------------------------- tool functions
-func _assign_to_parent(value):
-	if not value:
-		return
+func _assign_to_parent():
 	var o = self
 	while o:
 		if o.get_class() == "dzPortalsZone":
@@ -267,14 +337,57 @@ func _assign_to_parent(value):
 			return
 		o = o.get_parent()
 
-func _resize_to_mesh(value):
-	if not value:
+func _resize_to_mesh( child ):
+	if not child:
 		return
+	var lowest = Vector3(99999,99999,99999)
+	var highest = Vector3(-99999,-99999,-99999)
+	if child.get_class() == "MeshInstance":
+		var aabb = child.get_aabb()
+		var v = child.to_global(aabb.position)
+		if v.x < lowest.x:
+			lowest.x = v.x
+		if v.y < lowest.y:
+			lowest.y = v.y
+		if v.z < lowest.z:
+			lowest.z = v.z
+		if v.x > highest.x:
+			highest.x = v.x
+		if v.y > highest.y:
+			highest.y = v.y
+		if v.z > highest.z:
+			highest.z = v.z
+			
+		v = child.to_global(aabb.end)
+		if v.x < lowest.x:
+			lowest.x = v.x
+		if v.y < lowest.y:
+			lowest.y = v.y
+		if v.z < lowest.z:
+			lowest.z = v.z
+		if v.x > highest.x:
+			highest.x = v.x
+		if v.y > highest.y:
+			highest.y = v.y
+		if v.z > highest.z:
+			highest.z = v.z
+	rotation = Vector3.ZERO
+	
+	var size = highest - lowest
+	var center = lowest + size / 2.0
+	translation = get_parent().to_local(center)
+	
+	lowest = to_local(lowest)
+	highest = to_local(highest)
+	size = highest - lowest
+	dimensions = size.abs()
+
+
+func _resize_to_zone():
 	if not zone:
 		return
 	var lowest = Vector3(99999,99999,99999)
 	var highest = Vector3(-99999,-99999,-99999)
-	resize_to_mesh = value
 	for child in zone.get_children():
 		if child.get_class() == "MeshInstance":
 			var aabb = child.get_aabb()
@@ -316,6 +429,5 @@ func _resize_to_mesh(value):
 	size = highest - lowest
 	dimensions = size.abs()
 	
-	resize_to_mesh = false
 	property_list_changed_notify()
 
