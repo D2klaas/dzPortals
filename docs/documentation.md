@@ -21,11 +21,12 @@ Areas define the volume of a zone. A zones volume can be defined by one or more 
 Gates are the visual connections between zones.
 
 ## Zone
-<p style="clear:both">
 <img align="left" width="225" height="225" alt="Zone Gizmo in editor" src="screens/zone-icon.PNG"> 
  Zone should containe all visual instances of the defining space. If the zone is culled it gets hidden and so do all of its children nodes.
-</p>
-
+  
+  
+  
+  
 ### Properties:
 * disabled: zone gets excluded from calculation. The zone will stay in its initial state until disabled = false is set
 * blackList: Array of nodePath's. When the camera is in the zone ayy nodes defined in here will be immediately culled and excluded from any further processing.
