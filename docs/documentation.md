@@ -62,33 +62,32 @@ You have to hit "Refresh polygon count" first to aquire the total amount of scen
 * processing time: the time it took to process all areas and gates
 
 ### Tools
-
-### Visibility
-* CREATE
- * Create zones for selected zones  
+* **CREATE**
+  * Create zones for selected zones  
 Will create zone for the every currently selected nodes. The selected nodes will be parented to the created zone. **Currently you cannot use this on the root node. You have to covert the zone to the root node manually if you want to do so.**
- * Create areas for selected zones  
+  * Create areas for selected zones  
  Will create a area for the selected zones. The area gets scaled to the extends of the inner nodes and connected to the zone.
- * Create zones and areas for selected zones  
+  * Create zones and areas for selected zones  
  Combines both of the above
-* GATES
-  * Connect magnetic gates  
+* **GATES**
+   * Connect magnetic gates  
   Will provoke a magnetic connection of magentic gates to connect other magentic gates.
-  * auto detec zones  
+   * auto detec zones  
   Will try to find corresponding zones for the gates and assign them to the red and blue side.
-* AREAS
- * Assign to parent zone  
+* **AREAS**
+  * Assign to parent zone  
  Will link areas to the there parent zone
- * Resize to zone  
+  * Resize to zone  
  Will resize the area to the extends of the connected zone
-* ZONES
- * auto blacklist zones  
+* **ZONES**
+  * auto blacklist zones  
  Will analyse the scene to further optimize the culling effect of gates. Any zone found to be invisble through corresponding gates will be put in the blackList therefore culled when entering this zone.
- * clear zone blacklists  
+  * clear zone blacklists  
  Will clear the existing baclklist of the zones
-* execute only on selected nodes  
+ * execute only on selected nodes  
 Any action taken will only be commited on selected nodes in the tree when this option is enabled. If not enabled actions will be taken on all corresponding nodes in the tree.
  
+### Visibility
 
 ## [API](#api)
 here
