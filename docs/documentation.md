@@ -75,17 +75,19 @@ Gates can connect two zones via setting them directly or can be defined as magne
 On the bottom menu you find the dzPortlas Inspector with many usefull tools to help you build your portals  system.
 
 ### Stats
-<img src="screens/inspector-stats.png">
-Here you see the impact of the portal optimisation.
-* visible zones: zones that are visible, the others are not
-* gates processed: the amount of gates that had to be calculated in the current frame
-* clipped polys: the amount of polygons that are clipped through portals optimisation. This number shows only potential reduced polygons, this does not take in acount allready clipped polygons through frustum culling or any other culling/hiding optimization.
-You have to hit "Refresh polygon count" first to aquire the total amount of scene polygons.
-* processing time: the time it took to process all areas and gates
+<img src="screens/inspector-stats.png">  
+
+Here you see the impact of the portal optimisation.  
+* visible zones: zones that are visible, the others are not  
+* gates processed: the amount of gates that had to be calculated in the current frame  
+* clipped polys: the amount of polygons that are clipped through portals optimisation. This number shows only potential reduced polygons, this does not take in acount allready clipped polygons through frustum culling or any other culling/hiding optimization.  
+You have to hit "Refresh polygon count" first to aquire the total amount of scene polygons.  
+* processing time: the time it took to process all areas and gates  
 
 ### Tools
-<img src="screens/inspector-tools.png">
-Here you find a collection of usefull tools to make your scene ready for portals. This speeds up the work and make it more convenient.
+<img src="screens/inspector-tools.png">  
+
+Here you find a collection of usefull tools to make your scene ready for portals. This speeds up the work and make it more convenient.  
 * **CREATE**
   * Create zones for selected zones  
 Will create zone for the every currently selected nodes. The selected nodes will be parented to the created zone. **Currently you cannot use this on the root node. You have to covert the zone to the root node manually if you want to do so.**
@@ -120,6 +122,12 @@ All of the feature of dzPortals can be accessed through scripting.
 
 ### dzPortals
 Is a singleton
+
+#### Methods
+dzPortalsGate **get_nearest_gate( Vector3 )**  
+*returns the nearest gate to Vector3 in global space*
+
+### dzPortalsZone
 
 #### Properties
 **disabled** :bool  
