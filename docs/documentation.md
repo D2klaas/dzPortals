@@ -118,7 +118,7 @@ Gizmo visiblity can be toggled here.
 ## API
 All of the feature of dzPortals can be accessed through scripting. 
 
-### dzPortalsZone
+### dzPortals
 
 #### Properties
 **disabled** :bool  
