@@ -1,5 +1,9 @@
 # dzPortals - Documentation
 
+* [Installation](#installation)
+* [Basics](#basic-workings)
+* [API](#api)
+
 ## Installation
 Just download the project, unzip it and place the contents of the addons folder into the addons folder of your godot project directory.
 Reload/load your project.
