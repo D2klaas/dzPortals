@@ -62,6 +62,7 @@ You have to hit "Refresh polygon count" first to aquire the total amount of scen
 * processing time: the time it took to process all areas and gates
 
 ### Tools
+Here you find a collection of usefull tools to make your scene ready for portals. This speeds up the work and make it more convenient.
 * **CREATE**
   * Create zones for selected zones  
 Will create zone for the every currently selected nodes. The selected nodes will be parented to the created zone. **Currently you cannot use this on the root node. You have to covert the zone to the root node manually if you want to do so.**
@@ -88,6 +89,54 @@ Will create zone for the every currently selected nodes. The selected nodes will
 Any action taken will only be commited on selected nodes in the tree when this option is enabled. If not enabled actions will be taken on all corresponding nodes in the tree.
  
 ### Visibility
+Gizmo visiblity can be toggled here.
 
-## [API](#api)
-here
+## API
+All of the feature of dzPortals can be accessed through scripting. 
+
+### dzPortalsZone
+
+#### Properties
+**disabled**
+defaults to false
+
+#### Methodes
+void **auto_blacklist()**
+automaticly generates a blacklist of zones
+
+void **add_blackList( zone: dzPortalsZone )**
+adds the zone to the blacklist
+
+void **remove_blackList( zone: dzPortalsZone )**
+removes the zone from the blacklist
+
+### dzPortalsArea
+
+#### Properties
+**disabled**
+defaults to false
+
+**shape**
+defines the shape, can be SHAPE.box, SHAPE.sphere or SHAPE.cylinder
+
+**dimensions**: Vector3
+defines spacial extends
+
+**margin**: Float
+defines spacial margins
+
+**zone**: dzPortalsZone
+the connected zone
+
+#### Methodes
+bool **is_inside( Vector3 )**
+Returns true if point is in volume
+
+void **assign_to_parent( )**
+Connects this area to the parent zone
+
+void **resize_to_mesh( mesh:meshInstance )**
+Resizes the area to the given mesh extends
+
+void **resize_to_zone( )**
+Resizes the area to the extends of the connected zone
