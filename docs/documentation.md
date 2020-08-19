@@ -125,7 +125,7 @@ Is a singleton
 **disabled** :bool  
 *defaults to false*
 
-#### Methodes
+#### Methods
 void **auto_blacklist()**  
 *automaticly generates a blacklist of zones*
 
@@ -151,7 +151,7 @@ void **remove_blackList( zone: dzPortalsZone )**
 
 ### dzPortalsArea
 
-#### Methodes
+#### Methods
 dzPortalsGate **get_nearest_gate( Vector3 )**  
 *Returns the nearest gate to vector3 in global space*
 
@@ -173,7 +173,7 @@ dzPortalsGate **get_nearest_gate( Vector3 )**
 **zone**: NodePath  
 *the connected zone*
 
-#### Methodes
+#### Methods
 bool **is_inside( Vector3 )**  
 *Returns true if point is in volume*
 
@@ -223,7 +223,7 @@ void **resize_to_zone( )**
 **cornerPoints** :array of Vector3  
 *all of the gates corner points in local space*
 
-#### Methodes
+#### Methods
 int **get_side( Vector3 )**   
 *returns dzPortalsGate.BLUE_SIDE when the point is on the blue side or else returns dzPortalsGate.RED_SIDE*
 
