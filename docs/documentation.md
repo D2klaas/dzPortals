@@ -125,7 +125,7 @@ void **remove_blackList( zone: dzPortalsZone )**
 **margin**: Float  
 *defines spacial margins*
 
-**zone**: dzPortalsZone  
+**zone**: NodePath  
 *the connected zone*
 
 #### Methodes
@@ -140,3 +140,73 @@ void **resize_to_mesh( mesh:meshInstance )**
 
 void **resize_to_zone( )**  
 *Resizes the area to the extends of the connected zone*
+
+### dzPortalsGate
+
+#### Properties
+**disabled** :bool  
+*defaults to false*
+
+**dimensions**: Vector2  
+*defines spacial extends*
+
+**do_frustum_check** :bool  
+*enables enhanced culling methode*
+
+**is_magnetic** :bool  
+*enables magnetic mode*
+
+**auto_magnetic** :bool  
+*enables auto connect to magnetic gates*
+
+**magnetic_distance** :float  
+*maximal distance to magnetic connections*
+
+**magnetic_angle** :float  
+*maximal angular offset to magnetic connections*
+
+**magnetic_dimension** :float  
+*maximal dimensional difference to magnetic connections*
+
+**cornerPoints** :array of Vector3  
+*all of the gates corner points in local space*
+
+#### Methodes
+int **get_side( Vector3 )**   
+*returns dzPortalsGate.BLUE_SIDE when the point is on the blue side or else returns dzPortalsGate.RED_SIDE*
+
+Plane **get_red_plane( )**   
+*returns a plane repressenting the red side in global space*
+
+voPlaneid **get_blue_plane( )**   
+*returns a plane repressenting the blue side in global space*
+
+void **set_magnetic_gate( dzPortalsGate )**  
+*sets the magentic gate*
+
+dzPortalsZone **get_magnetic_zone(  )**  
+*gets the zone connected by the magnetic gate*
+
+void **remove_magnetic_gate( dzPortalsGate )**  
+*removes the magnetic gate if its dzPortalsGate*
+
+void **auto_find_magnetic_gate(  )**  
+*tries to connect to other magentic gates*
+
+dzPortalsZone **get_red_zone(  )**  
+*gets the red zone*
+
+dzPortalsZone **get_blue_zone(  )**  
+*gets the blue zone*
+
+void **set_red_zone( dzPortalsZone )**  
+*sets the red zone*
+
+void **set_blue_zone( dzPortalsZone )**  
+*sets the blue zone*
+
+dzPortalsZone **get_other_zone( dzPortalsZone )**  
+*gets the zone on the opposite side of dzPortalsZone from the gate*
+
+void **auto_connect_zones( )**  
+*tries to find corresponding zones and connects them*
