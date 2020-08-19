@@ -2,6 +2,7 @@
 # dzPortals - bringing portals back to godot
 Godot portals addon for rendering optimisation.
 
+<img width="100%" src="screens/screen.png"> 
 
 ## What is a portals engine?
 A portals engine is a 3D rendering optimisation technique where confined spaces get connected by virtual portals. Spaces that are not visible through a portal will be excluded from rendering. This can provide a significant reduction of draw calls and rendered polygons.
@@ -16,3 +17,12 @@ Check out the docs. They provide installation notes, a basic explanation of comp
 * [Basics](docs/documentation.md#basic-workings)
 * [API](docs/documentation.md#api)
 
+## Common Issues
+I'm waiting for your issues
+
+## Contributing
+Please try and test it. Any issue report and suggestion are appreciated.
+
+##To Do
+Fix the make zone to root problem.  
+(i haven't found any way to make a node created by script to the new scene root)
