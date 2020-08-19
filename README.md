@@ -17,6 +17,9 @@ Check out the docs. They provide installation notes, a basic explanation of comp
 * [Basics](docs/documentation.md#basic-workings)
 * [API](docs/documentation.md#api)
 
+## In depth view on the algorythm
+Wanna know more? [Check it out here](docs/indepth.md)
+
 ## Common Issues
 I'm waiting for your issues
 
