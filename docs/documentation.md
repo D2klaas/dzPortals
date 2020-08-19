@@ -23,9 +23,8 @@ Gates are the visual connections between zones.
 ## Zone
 <p align="center">
 <img align="left" width="225" height="225" alt="Zone Gizmo in editor" src="screens/zone-icon.PNG"> 
-</p>
  Zone should containe all visual instances of the defining space. If the zone is culled it gets hidden and so do all of its children nodes.
-<div style="clear:both"></div>
+</p>
 
 ### Properties:
 * disabled: zone gets excluded from calculation. The zone will stay in its initial state until disabled = false is set
