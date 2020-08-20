@@ -15,15 +15,15 @@ In godot goto project settings->addons and activate the dzPortals addon.
 You're done.
 
 ## Basic workings
-DzPortals works with 3 basic objects zones, areas and gates.
-
-A zone defines a confined space that should be culled by the portals engine.
-Areas define the volume of a zone. A zones volume can be defined by one or more areas.
-Gates are the visual connections between zones.
-
+DzPortals works with 3 basic objects **zones**, **areas** and **gates**.
+  
+A **zone** defines a confined space that should be culled by the portals engine.
+**Areas** define the volume of a zone. A zones volume can be defined by one or more areas.
+**Gates** are the visual connections between zones.  
+  
 ## Zone
 <img width="225" height="225" alt="Area Gizmo in editor" src="screens/zone-icon.PNG"> 
- Zone should containe all visual instances of the defining space. If the zone is culled it gets hidden and so do all of its children nodes.
+Zone should containe all visual instances of the defining space. If the zone is culled it gets hidden and so do all of its children nodes.
   
 ### Properties:
 * disabled: zone gets excluded from calculation. The zone will stay in its initial state until disabled = false is set
