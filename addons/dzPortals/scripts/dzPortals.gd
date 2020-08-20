@@ -33,6 +33,8 @@ signal stats_updated
 
 func _ready():
 	reset_stats()
+	var c = get_tree().get_nodes_in_group("dzPortalsPlugin")
+	c[0].init()
 
 
 func set_stat(name,value):
@@ -106,5 +108,4 @@ func get_nearest_gate( vec ):
 				lowest = d
 				lowestNode = node
 	return lowestNode
-
 

@@ -36,6 +36,9 @@ signal zone_hidden
 
 export(bool) var disabled = false setget _set_disabled
 
+#var dzPortals
+
+
 func get_class():
 	return "dzPortalsZone"
 
@@ -62,7 +65,6 @@ func _add_viewport_sprite():
 	_viewportSprite.material_override = load("res://addons/dzPortals/materials/iconZone.material")
 	_viewportSprite.texture = _viewportSprite.material_override.albedo_texture
 	add_child(_viewportSprite)
-	
 
 
 func _notification( what ):
@@ -110,10 +112,11 @@ func do_portal():
 
 
 func do_inspector():
-	if _is_visible:
-		dzPortals.inc_stat("visible_zones", 1)
-	else:
-		dzPortals.inc_stat("clipped_polys", _polycount)
+	if dzPortals:
+		if _is_visible:
+			dzPortals.inc_stat("visible_zones", 1)
+		else:
+			dzPortals.inc_stat("clipped_polys", _polycount)
 
 func do_portal_gates():
 	if _is_processed:
