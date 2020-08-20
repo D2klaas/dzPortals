@@ -156,13 +156,6 @@ void **remove_blackList( zone: dzPortalsZone )**
 **zone_hidden**
 *whenever the zone gets invisible*
 
-
-### dzPortalsArea
-
-#### Methods
-dzPortalsGate **get_nearest_gate( Vector3 )**  
-*Returns the nearest gate to vector3 in global space*
-
 ### dzPortalsArea
 
 #### Properties
