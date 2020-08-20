@@ -16,7 +16,10 @@ extends Control
 var StatsList
 var polycount:float = 0
 
+
 func init():
+	dzPortals.connect("stats_updated",self,"update")
+	dzPortals.process_stat = true
 	if not StatsList:
 		StatsList = find_node("StatsList",true,false)
 		StatsList.clear()
@@ -30,9 +33,14 @@ func init():
 		StatsList.add_item("0")
 	pass
 
-func _ready():
-	dzPortals.connect("stats_updated",self,"update")
-	dzPortals.process_stat = true
+
+#func _process(delta):
+#	dzPortals = get_node_or_null("/root/dzPortals")
+#	if dzPortals:
+#		dzPortals.connect("stats_updated",self,"update")
+#		dzPortals.process_stat = true
+#		set_process(false)
+
 
 func _on_RefreshPolycountButton_pressed():
 	var root = get_tree().get_edited_scene_root()
