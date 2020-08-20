@@ -38,7 +38,7 @@ Areas should enclose all of the visual instances in the zone. You can have as ma
 * dimensions: the spacial extends of the shape
 * margin: an margin applied to the shape
 * zone: the zone it is used for
-* blackList: Array of nodePath's. When the camera is in this area any nodes defined in here will be immediately culled and excluded from any further processing.
+* blackList: Array of nodePath's. When the camera is in this area any zones defined in here will be immediately culled and excluded from any further processing.
 * disabled: area gets excluded from calculation.
 
 <img width="400" src="screens/area-highlight.PNG">
