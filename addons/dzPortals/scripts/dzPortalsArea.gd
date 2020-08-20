@@ -86,11 +86,6 @@ func do_portal():
 func do_inspector():
 	pass
 
-#
-#func _hide_gizmo( state ):
-#	_gizmo_hidden = state
-#	redraw()
-
 
 #-------------------------------- black list
 func _set_blackList( value ):
@@ -404,8 +399,10 @@ func resize_to_zone():
 		return
 	var lowest = Vector3(99999,99999,99999)
 	var highest = Vector3(-99999,-99999,-99999)
+	var child_count = 0
 	for child in zone.get_children():
 		if child.get_class() == "MeshInstance":
+			child_count += 1
 			var aabb = child.get_aabb()
 			var v = child.to_global(aabb.position)
 			if v.x < lowest.x:
@@ -435,7 +432,8 @@ func resize_to_zone():
 			if v.z > highest.z:
 				highest.z = v.z
 	rotation = Vector3.ZERO
-	
+	if child_count == 0:
+		return
 	var size = highest - lowest
 	var center = lowest + size / 2.0
 	translation = get_parent().to_local(center)

@@ -34,14 +34,6 @@ func init():
 	pass
 
 
-#func _process(delta):
-#	dzPortals = get_node_or_null("/root/dzPortals")
-#	if dzPortals:
-#		dzPortals.connect("stats_updated",self,"update")
-#		dzPortals.process_stat = true
-#		set_process(false)
-
-
 func _on_RefreshPolycountButton_pressed():
 	var root = get_tree().get_edited_scene_root()
 	polycount = count_poly(root)
@@ -105,7 +97,6 @@ func createZone( node ):
 		return
 	var zone = dzPortals.plugin.dzPortalsZone.new()
 	var name = node.name+"Zone"
-	print_debug("create zone "+name)
 	zone.name = name
 	zone.connect("ready",self,"_add_child_deferred",[zone,node],CONNECT_ONESHOT )
 	zone.translation = node.translation

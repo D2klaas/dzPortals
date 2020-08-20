@@ -37,7 +37,7 @@ signal zone_hidden
 export(bool) var disabled = false setget _set_disabled
 
 #var dzPortals
-
+var last_transform = Transform.IDENTITY
 
 func get_class():
 	return "dzPortalsZone"
@@ -49,7 +49,8 @@ func _init():
 
 func _ready():
 	if Engine.editor_hint:
-		set_notify_transform ( true )
+		#this causes many chrashes
+#		set_notify_transform ( true )
 		_add_viewport_sprite()
 	add_to_group("dzPortalsZones")
 	_register_blackList( )
@@ -67,14 +68,20 @@ func _add_viewport_sprite():
 	add_child(_viewportSprite)
 
 
-func _notification( what ):
-	if what == Spatial.NOTIFICATION_TRANSFORM_CHANGED:
-		for gate in _gates:
-			gate.redraw()
+#func _notification( what ):
+#	if what == Spatial.NOTIFICATION_TRANSFORM_CHANGED:
+#		for gate in _gates:
+#			gate.redraw()
 
 #---------------------------------- processing
 func _process( delta ):
-	if not Engine.editor_hint:
+	# set_notify_transform alternative
+	if Engine.editor_hint:
+		if not last_transform.is_equal_approx( transform ):
+			for gate in _gates:
+				gate.redraw()
+		last_transform = global_transform
+	else:
 		visible = _is_visible
 	if _is_visible != _is_visible_last_time:
 		if _is_visible:

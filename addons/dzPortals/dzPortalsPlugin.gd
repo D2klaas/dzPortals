@@ -13,26 +13,30 @@ tool
 extends EditorPlugin
 
 var dzPortalsControl
-
-const dzPortalsArea = preload("scripts/dzPortalsArea.gd")
-const dzPortalsZone = preload("scripts/dzPortalsZone.gd")
-const dzPortalsGate = preload("scripts/dzPortalsGate.gd")
+var dzPortalsArea
+var dzPortalsZone
+var dzPortalsGate
 
 func _enter_tree():
+	add_to_group("___dzPortalsPlugin___")
+	add_autoload_singleton( "dzPortals", "res://addons/dzPortals/scripts/dzPortals.gd" )
+
+func init():
 	# Initialization of the plugin goes here
 	# Add the new type with a name, a parent type, a script and an icon
-	add_autoload_singleton ( "dzPortals", "res://addons/dzPortals/scripts/dzPortals.gd" )
-
+	
+	dzPortalsArea = load("res://addons/dzPortals/scripts/dzPortalsArea.gd")
+	dzPortalsZone = load("res://addons/dzPortals/scripts/dzPortalsZone.gd")
+	dzPortalsGate = load("res://addons/dzPortals/scripts/dzPortalsGate.gd")
+	
 	add_custom_type("dzPortalsArea", "ImmediateGeometry", dzPortalsArea, preload("icons/gate.svg"))
 	add_custom_type("dzPortalsZone", "Position3D", dzPortalsZone, preload("icons/gate.svg"))
 	add_custom_type("dzPortalsGate", "ImmediateGeometry", dzPortalsGate, preload("icons/gate.svg"))
 	
-	dzPortalsControl = preload("controls/dzPortalsControl.tscn").instance()
+	dzPortalsControl = load("res://addons/dzPortals/controls/dzPortalsControl.tscn").instance()
 	
 	add_control_to_bottom_panel(dzPortalsControl, "dzPortals")
 	dzPortalsControl.init()
-	dzPortals.control = dzPortalsControl
-	dzPortals.plugin = self
 
 
 func _exit_tree():
@@ -41,6 +45,5 @@ func _exit_tree():
 	remove_custom_type("dzPortalsArea")
 	remove_custom_type("dzPortalsZone")
 	remove_custom_type("dzPortalsGate")
-	remove_autoload_singleton ("dzPortals")
 	remove_control_from_bottom_panel(dzPortalsControl)
-	dzPortalsControl.queue_free()
+	remove_autoload_singleton ("dzPortals")

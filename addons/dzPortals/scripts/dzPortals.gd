@@ -16,10 +16,6 @@ extends Node
 var plugin
 var control
 
-#var visible_zones = 0
-#var gates_processed = 0
-#var clipped_polys = 0
-#var processing_time = 0
 var processing_time_measure = 0
 var processing_time_start = 0
 
@@ -30,11 +26,16 @@ var _stats_need_update = false
 
 signal stats_updated
 
-
 func _ready():
+	# the singleton is now ready
+	# lets find the plugin and complete the initialisation
+	var c = get_tree().get_nodes_in_group("___dzPortalsPlugin___")
+	if c.size() == 1:
+		plugin = c[0]
+		plugin.init()
+	else:
+		printerr("cannot find dzPortalsPlugin")
 	reset_stats()
-	var c = get_tree().get_nodes_in_group("dzPortalsPlugin")
-	c[0].init()
 
 
 func set_stat(name,value):
@@ -63,15 +64,10 @@ func _process(delta):
 	_stats_need_update = false
 	
 	reset_stats()
-#	var _visible_zones = visible_zones
-#	var _gates_processed = gates_processed
-#	var _clipped_polys = clipped_polys
-#	var _processing_time = processing_time
+
 	
 	var start = OS.get_ticks_msec()
-#	visible_zones = 0
-#	gates_processed = 0
-#	clipped_polys = 0
+
 	
 	get_tree().call_group_flags(SceneTree.GROUP_CALL_REALTIME,"dzPortalsAreas","do_prepare")
 	get_tree().call_group_flags(SceneTree.GROUP_CALL_REALTIME,"dzPortalsGates","do_prepare")
@@ -98,6 +94,7 @@ func _process(delta):
 
 
 func get_nearest_gate( vec ):
+	return
 	var lowest = 9999999999999
 	var lowestNode = null
 	var nodes = get_tree().get_nodes_in_group("dzPortalsGates")

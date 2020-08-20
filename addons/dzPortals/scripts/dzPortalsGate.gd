@@ -42,22 +42,54 @@ var red_zone
 var cornerPoints = []
 var _plane
 var _viewportSprite
-var _is_ready = false
+var _is_init = false
+var _is_tree = true
+
+var last_transform = Transform.IDENTITY
+
+func _init():
+	_magnetic_gate = NodePath("")
+
+
+func _enter_tree():
+	set_process(true)
+	_is_tree = true
+
+func _exit_tree():
+	set_process(false)
+	_is_tree = false
+
 
 func get_class():
 	return "dzPortalsGate"
 
 func _ready():
+	_is_init = true
+	_is_tree = true
 	if Engine.editor_hint:
-		set_notify_transform ( true )
+		# this causes many chrashes
+#		set_notify_transform ( true )
+		material_override = load("res://addons/dzPortals/materials/gate.material")
 		_add_viewport_sprite()
 	_register_blue_zone()
 	_register_red_zone()
 	_set_dimensions(dimensions)
 	add_to_group("dzPortalsGates")
-	material_override = load("res://addons/dzPortals/materials/gate.material")
-	_is_ready = true
+	_on_transform()
 
+
+func _on_transform():
+	if _is_init and _is_tree:
+		call_deferred("auto_find_magnetic_gate")
+		call_deferred("redraw")
+
+
+func _process(delta):
+	# set_notify_transform alternative
+	if Engine.editor_hint:
+		if not last_transform.is_equal_approx( global_transform ):
+			_on_transform()
+			last_transform = Transform(global_transform.basis,global_transform.origin)
 
 func _add_viewport_sprite():
 	if _viewportSprite:
@@ -71,11 +103,11 @@ func _add_viewport_sprite():
 	add_child(_viewportSprite)
 
 
-func _notification( what ):
-	if what == Spatial.NOTIFICATION_TRANSFORM_CHANGED:
-		if is_magnetic and auto_magnetic:
-			auto_find_magnetic_gate()
-		redraw()
+#func _notification( what ):
+#	if what == Spatial.NOTIFICATION_TRANSFORM_CHANGED:
+#		if is_magnetic and auto_magnetic:
+#			auto_find_magnetic_gate()
+#		redraw()
 
 
 #----------------------------------- processing
@@ -226,22 +258,24 @@ func _is_magnetic():
 	return true
 
 func _set_magnetic_gate(value):
+	if not value:
+		value = ""
+	if red_zone and blue_zone:
+		_magnetic_gate = ""
+		_register_magnetic_gate()
+		return
+	var node = get_node_or_null(value)
+	if node and node.get_class() != "dzPortalsGate":
+		_magnetic_gate = ""
+		_register_magnetic_gate()
+		return
 	_magnetic_gate = value
 	_register_magnetic_gate()
 
 
 func _register_magnetic_gate():
-	if magnetic_gate:
-		magnetic_gate.remove_magnetic_gate( self )
-	if _magnetic_gate:
-		magnetic_gate = get_node_or_null(_magnetic_gate)
-	if not magnetic_gate:
-		return
-	if magnetic_gate.get_class() != "dzPortalsGate":
-		magnetic_gate = null
-		_magnetic_gate = ""
-		redraw()
-		return
+	magnetic_gate = get_node_or_null(_magnetic_gate)
+	redraw()
 
 
 func get_magnetic_zone():
@@ -252,20 +286,20 @@ func get_magnetic_zone():
 
 
 func remove_magnetic_gate( gate ):
-	if not magnetic_gate:
+	if not gate:
 		return
 	if magnetic_gate == gate:
 		var mg = magnetic_gate
-		_magnetic_gate = null
-		magnetic_gate = null
-		mg.remove_magnetic_gate(self)
+		_set_magnetic_gate("")
+		mg.call_deferred("remove_magnetic_gate",self)
 
 
 func set_magnetic_gate( gate ):
-	if red_zone and blue_zone:
+	if not _is_tree or not _is_init:
 		return
-	
-	_set_magnetic_gate( get_path_to(gate) )
+	if magnetic_gate == gate:
+		return
+	_set_magnetic_gate( get_path_to(gate))
 	property_list_changed_notify()
 
 
@@ -274,7 +308,7 @@ func auto_find_magnetic_gate():
 		return
 	var gates = get_tree().get_nodes_in_group("dzPortalsGates")
 	
-	remove_magnetic_gate( magnetic_gate )
+	#remove_magnetic_gate( magnetic_gate )
 	
 	for gate in gates:
 		if gate == self:
@@ -293,7 +327,13 @@ func auto_find_magnetic_gate():
 		if abs(dimensions.y - gate.dimensions.y) > magnetic_dimension:
 			continue
 		set_magnetic_gate(gate)
-		gate.set_magnetic_gate(self)
+		gate.call_deferred("set_magnetic_gate",self)
+		return
+	
+#	remove_magnetic_gate( magnetic_gate )
+#		if gate and gate._is_tree and gate._is_init:
+#			gate._magnetic_gate = gate.get_path_to(self)
+#			pass
 
 
 #----------------------------------- disabled
@@ -398,7 +438,7 @@ func get_other_zone( zone ):
 func redraw():
 	if not Engine.editor_hint:
 		return
-	if not _is_ready:
+	if not _is_init:
 		return
 
 	var d = dimensions / 2.0
