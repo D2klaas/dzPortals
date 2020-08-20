@@ -27,7 +27,7 @@ Zone should containe all visual instances of the defining space. If the zone is 
   
 ### Properties:
 * disabled: zone gets excluded from calculation. The zone will stay in its initial state until disabled = false is set
-* blackList: Array of nodePath's. When the camera is in the zone ayy nodes defined in here will be immediately culled and excluded from any further processing.
+* blackList: Array of nodePath's. When the camera is in the zone any nodes defined in here will be immediately culled and excluded from any further processing.
 
 ## Area
 <img width="225" height="225" alt="Zone Gizmo in editor" src="screens/area-icon.PNG"> 
