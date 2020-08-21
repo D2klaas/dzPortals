@@ -97,11 +97,11 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 5 )
 [node name="Lamp3" parent="." instance=ExtResource( 11 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -5 )
 
+[node name="Lamp6" parent="." instance=ExtResource( 11 )]
+transform = Transform( 0.868735, -0.495277, 0, 0.495277, 0.868735, 0, 0, 0, 1, -9, 5.23247, -5 )
+
 [node name="Lamp4" parent="." instance=ExtResource( 11 )]
 transform = Transform( 0.868735, -0.495277, 0, 0.495277, 0.868735, 0, 0, 0, 1, -9, 5.23247, 0 )
 
 [node name="Lamp5" parent="." instance=ExtResource( 11 )]
 transform = Transform( 0.868735, -0.495277, 0, 0.495277, 0.868735, 0, 0, 0, 1, -9, 5.23247, 5 )
-
-[node name="Lamp6" parent="." instance=ExtResource( 11 )]
-transform = Transform( 0.868735, -0.495277, 0, 0.495277, 0.868735, 0, 0, 0, 1, -9, 5.23247, -5 )
