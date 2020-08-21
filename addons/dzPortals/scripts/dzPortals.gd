@@ -68,19 +68,16 @@ func _process(delta):
 	
 	var start = OS.get_ticks_msec()
 
-	print_debug("-------")
 	get_tree().call_group_flags(SceneTree.GROUP_CALL_REALTIME,"dzPortalsAreas","do_prepare")
 	get_tree().call_group_flags(SceneTree.GROUP_CALL_REALTIME,"dzPortalsGates","do_prepare")
 	get_tree().call_group_flags(SceneTree.GROUP_CALL_REALTIME,"dzPortalsZones","do_prepare")
 	
 	get_tree().call_group_flags(SceneTree.GROUP_CALL_REALTIME,"dzPortalsAreas","do_portal")
-	print_debug(stats["entered_areas"])
 	if stats["entered_areas"] == 0:
 		#the camera is outside
 		var outsideZones = get_tree().get_nodes_in_group("__dzPortalsZone_outside__")
 		for zone in outsideZones:
 			# activete outside zones for processing
-			print_debug(zone.name)
 			zone._is_active = true
 	get_tree().call_group_flags(SceneTree.GROUP_CALL_REALTIME,"dzPortalsGates","do_portal")
 	get_tree().call_group_flags(SceneTree.GROUP_CALL_REALTIME,"dzPortalsZones","do_portal")

@@ -87,8 +87,6 @@ func _process( delta ):
 
 # prepare this zone for visiblity calculation
 func do_prepare():
-	if name == "Outside":
-		print_debug("zone: "+name+" off")
 	if disabled:
 		return
 	_is_processed = false
@@ -97,12 +95,9 @@ func do_prepare():
 
 #process this zone and its gates
 func do_portal():
-	if name == "Outside":
-		print_debug("zone: "+name+" "+str(_is_active))
 	if disabled:
 		return
 	if _is_active:
-		print_debug(name)
 		_set_visible( true )
 		if not _is_inside_last_time:
 			emit_signal("zone_entered")
