@@ -100,7 +100,6 @@ func _process(delta):
 
 
 func get_nearest_gate( vec ):
-	return
 	var lowest = 9999999999999
 	var lowestNode = null
 	var nodes = get_tree().get_nodes_in_group("dzPortalsGates")
