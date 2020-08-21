@@ -9,6 +9,7 @@ export_presets.cfg
 data_*/
 
 addons/github-integration/*
+addons/github-integration/
 
 
 
