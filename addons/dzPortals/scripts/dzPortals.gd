@@ -86,6 +86,12 @@ func _process(delta):
 			processing_time_measure = 0
 		
 		get_tree().call_group_flags(SceneTree.GROUP_CALL_REALTIME,"dzPortalsAreas","do_inspector")
+		if stats["visible_zones"] == 0:
+			#the camera is outside
+			var outsideZones = get_tree().get_nodes_in_group("__dzPortalsZone_outside__")
+			for zone in outsideZones:
+				# activete outside zones for processing
+				zone._is_active = true
 		get_tree().call_group_flags(SceneTree.GROUP_CALL_REALTIME,"dzPortalsGates","do_inspector")
 		get_tree().call_group_flags(SceneTree.GROUP_CALL_REALTIME,"dzPortalsZones","do_inspector")
 		

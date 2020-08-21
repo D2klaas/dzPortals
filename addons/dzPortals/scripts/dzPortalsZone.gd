@@ -35,6 +35,7 @@ signal zone_shown
 signal zone_hidden
 
 export(bool) var disabled = false setget _set_disabled
+export(bool) var outside = false setget _set_outside
 
 #var dzPortals
 var last_transform = Transform.IDENTITY
@@ -49,8 +50,7 @@ func _init():
 
 func _ready():
 	if Engine.editor_hint:
-		#this causes many chrashes
-#		set_notify_transform ( true )
+		set_notify_transform ( true )
 		_add_viewport_sprite()
 	add_to_group("dzPortalsZones")
 	_register_blackList( )
@@ -68,20 +68,15 @@ func _add_viewport_sprite():
 	add_child(_viewportSprite)
 
 
-#func _notification( what ):
-#	if what == Spatial.NOTIFICATION_TRANSFORM_CHANGED:
-#		for gate in _gates:
-#			gate.redraw()
+func _notification( what ):
+	if what == Spatial.NOTIFICATION_TRANSFORM_CHANGED:
+		for gate in _gates:
+			gate.redraw()
 
 #---------------------------------- processing
 func _process( delta ):
 	# set_notify_transform alternative
-	if Engine.editor_hint:
-		if not last_transform.is_equal_approx( transform ):
-			for gate in _gates:
-				gate.redraw()
-		last_transform = global_transform
-	else:
+	if not Engine.editor_hint:
 		visible = _is_visible
 	if _is_visible != _is_visible_last_time:
 		if _is_visible:
@@ -138,6 +133,13 @@ func do_portal_gates():
 			if gate._is_visible( self ):
 				gate.get_other_zone(self)._set_visible( true )
 				gate.get_other_zone(self).do_portal_gates()
+
+#------------------------------- outside
+func _set_outside(value):
+	if value:
+		add_to_group("__dzPortalsZone_outside__")
+	else:
+		remove_from_group("__dzPortalsZone_outside__")
 
 #------------------------------- gates
 func add_gate( new_gate ):

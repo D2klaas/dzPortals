@@ -228,3 +228,13 @@ func _on_ResizeToZone_pressed():
 func _onlyOnSelected():
 	return find_node("onlyOnSelectedNodes").pressed
 	
+
+
+func _on_DisablePortals_pressed( button_pressed ):
+	dzPortals.disabled = button_pressed
+	pass # Replace with function body.
+
+
+func _on_DisablePortals_toggled(button_pressed):
+	dzPortals.disabled = button_pressed
+	pass # Replace with function body.

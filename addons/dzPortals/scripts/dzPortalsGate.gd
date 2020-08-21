@@ -34,7 +34,7 @@ export var magnetic_dimension = 0.1
 export(NodePath) var _magnetic_gate setget _set_magnetic_gate
 var magnetic_gate
 
-export(bool) var disabled = false setget _set_disabled,_get_disabled
+export(bool) var disabled = false setget _set_disabled
 
 var blue_zone
 var red_zone
@@ -44,8 +44,6 @@ var _plane
 var _viewportSprite
 var _is_init = false
 var _is_tree = true
-
-var last_transform = Transform.IDENTITY
 
 func _init():
 	_magnetic_gate = NodePath("")
@@ -67,29 +65,21 @@ func _ready():
 	_is_init = true
 	_is_tree = true
 	if Engine.editor_hint:
-		# this causes many chrashes
-#		set_notify_transform ( true )
+		set_notify_transform ( true )
 		material_override = load("res://addons/dzPortals/materials/gate.material")
 		_add_viewport_sprite()
 	_register_blue_zone()
 	_register_red_zone()
 	_set_dimensions(dimensions)
 	add_to_group("dzPortalsGates")
-	_on_transform()
 
 
-func _on_transform():
-	if _is_init and _is_tree:
-		call_deferred("auto_find_magnetic_gate")
-		call_deferred("redraw")
-
-
-func _process(delta):
-	# set_notify_transform alternative
-	if Engine.editor_hint:
-		if not last_transform.is_equal_approx( global_transform ):
-			_on_transform()
-			last_transform = Transform(global_transform.basis,global_transform.origin)
+#func _process(delta):
+#	#set_notify_transform alternative
+#	if Engine.editor_hint:
+#		if not last_transform.is_equal_approx( global_transform ):
+#			_on_transform()
+#			last_transform = Transform(global_transform.basis,global_transform.origin)
 
 func _add_viewport_sprite():
 	if _viewportSprite:
@@ -103,16 +93,18 @@ func _add_viewport_sprite():
 	add_child(_viewportSprite)
 
 
-#func _notification( what ):
-#	if what == Spatial.NOTIFICATION_TRANSFORM_CHANGED:
-#		if is_magnetic and auto_magnetic:
-#			auto_find_magnetic_gate()
-#		redraw()
+func _notification( what ):
+	if what == Spatial.NOTIFICATION_TRANSFORM_CHANGED:
+		if is_magnetic and auto_magnetic:
+			auto_find_magnetic_gate()
+		redraw()
 
 
 #----------------------------------- processing
 func go_prepare():
 	if disabled:
+		return
+	if is_magnetic and magnetic_gate and magnetic_gate.disabled:
 		return
 	_plane = Plane(to_global(cornerPoints[1]),to_global(cornerPoints[0]),to_global(cornerPoints[2]))
 	pass
@@ -257,9 +249,15 @@ func _is_magnetic():
 		return false
 	return true
 
-func _set_magnetic_gate(value):
-	if not value:
-		value = ""
+
+func _set_magnetic_gate( value:NodePath, stop_propagate=false ):
+	if magnetic_gate:
+		if not stop_propagate:
+			magnetic_gate._set_magnetic_gate( "", true )
+#	if not value:
+#		_magnetic_gate = ""
+#		_register_magnetic_gate()
+#		return
 	if red_zone and blue_zone:
 		_magnetic_gate = ""
 		_register_magnetic_gate()
@@ -270,12 +268,27 @@ func _set_magnetic_gate(value):
 		_register_magnetic_gate()
 		return
 	_magnetic_gate = value
-	_register_magnetic_gate()
+	_register_magnetic_gate(  )
+	property_list_changed_notify()
 
 
-func _register_magnetic_gate():
+func _register_magnetic_gate(  ):
 	magnetic_gate = get_node_or_null(_magnetic_gate)
 	redraw()
+
+func set_magnetic_gate( value:Object ):
+	if not value:
+		_set_magnetic_gate( "" )
+		return
+	_set_magnetic_gate( get_path_to(value) )
+
+
+
+#func _register_magnetic_gate( stop_propagate=false ):
+#	var new = get_node_or_null(_magnetic_gate)
+#	if magnetic_gate and 
+#		magnetic_gate = get_node_or_null(_magnetic_gate)
+#	redraw()
 
 
 func get_magnetic_zone():
@@ -285,22 +298,13 @@ func get_magnetic_zone():
 		return blue_zone
 
 
-func remove_magnetic_gate( gate ):
-	if not gate:
-		return
-	if magnetic_gate == gate:
-		var mg = magnetic_gate
-		_set_magnetic_gate("")
-		mg.call_deferred("remove_magnetic_gate",self)
-
-
-func set_magnetic_gate( gate ):
-	if not _is_tree or not _is_init:
-		return
-	if magnetic_gate == gate:
-		return
-	_set_magnetic_gate( get_path_to(gate))
-	property_list_changed_notify()
+#func remove_magnetic_gate( gate ):
+#	if not gate:
+#		return
+#	if magnetic_gate == gate:
+#		var mg = magnetic_gate
+#		_set_magnetic_gate("")
+#		mg._set_magnetic_gate("")
 
 
 func auto_find_magnetic_gate():
@@ -308,7 +312,7 @@ func auto_find_magnetic_gate():
 		return
 	var gates = get_tree().get_nodes_in_group("dzPortalsGates")
 	
-	#remove_magnetic_gate( magnetic_gate )
+	set_magnetic_gate(null)
 	
 	for gate in gates:
 		if gate == self:
@@ -327,13 +331,8 @@ func auto_find_magnetic_gate():
 		if abs(dimensions.y - gate.dimensions.y) > magnetic_dimension:
 			continue
 		set_magnetic_gate(gate)
-		gate.call_deferred("set_magnetic_gate",self)
+		gate.set_magnetic_gate(self)
 		return
-	
-#	remove_magnetic_gate( magnetic_gate )
-#		if gate and gate._is_tree and gate._is_init:
-#			gate._magnetic_gate = gate.get_path_to(self)
-#			pass
 
 
 #----------------------------------- disabled
@@ -341,13 +340,6 @@ func _set_disabled(value):
 	disabled = value
 	redraw()
 
-
-func _get_disabled():
-	if disabled:
-		return true
-	if is_magnetic and magnetic_gate and magnetic_gate.disabled:
-		return true
-	return false
 
 #----------------------------------- set zones
 func get_red_zone():
