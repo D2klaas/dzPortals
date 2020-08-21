@@ -69,14 +69,16 @@ func do_portal():
 		if not camera:
 			return
 		if is_inside( camera.global_transform.origin ):
-			zone._is_active = true
-			if not _is_inside_last_time:
-				emit_signal("area_entered")
-			_is_inside_last_time = true
-			for blackZone in blackList:
-				blackZone._is_active = false
-				blackZone._is_visible = false
-				blackZone._is_processed = true
+			if zone:
+				dzPortals.inc_stat("entered_areas", 1)
+				zone._is_active = true
+				if not _is_inside_last_time:
+					emit_signal("area_entered")
+				_is_inside_last_time = true
+				for blackZone in blackList:
+					blackZone._is_active = false
+					blackZone._is_visible = false
+					blackZone._is_processed = true
 		else:
 			if _is_inside_last_time:
 				emit_signal("area_exited")
