@@ -102,9 +102,7 @@ func _notification( what ):
 
 #----------------------------------- processing
 func go_prepare():
-	if disabled:
-		return
-	if is_magnetic and magnetic_gate and magnetic_gate.disabled:
+	if is_disabled():
 		return
 	_plane = Plane(to_global(cornerPoints[1]),to_global(cornerPoints[0]),to_global(cornerPoints[2]))
 	pass
@@ -127,7 +125,7 @@ func get_side( vec ):
 
 
 func _is_invisible( vec, cam ):
-	if disabled:
+	if is_disabled():
 		return true
 	if _is_behind( vec, cam ):
 		return true
@@ -339,6 +337,13 @@ func auto_find_magnetic_gate():
 func _set_disabled(value):
 	disabled = value
 	redraw()
+
+
+func is_disabled():
+	if disabled:
+		return true
+	if is_magnetic and magnetic_gate and magnetic_gate.disabled:
+		return true
 
 
 #----------------------------------- set zones
