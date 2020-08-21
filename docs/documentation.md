@@ -27,6 +27,7 @@ Zone should containe all visual instances of the defining space. If the zone is 
   
 ### Properties:
 * disabled: zone gets excluded from calculation. The zone will stay in its initial state until disabled = false is set
+* outside: mark the zone aas outside. Outside zones dont need areas. They will be activated when the camera is in no other zone.
 * blackList: Array of nodePath's. When the camera is in the zone any nodes defined in here will be immediately culled and excluded from any further processing.
 
 ## Area
@@ -130,8 +131,11 @@ dzPortalsGate **get_nearest_gate( Vector3 )**
 ### dzPortalsZone
 
 #### Properties
-**disabled** :bool  
+**disabled** :bool
 *defaults to false*
+
+**outside** :bool
+*treat this zone aas the outside*
 
 #### Methods
 void **auto_blacklist()**  
