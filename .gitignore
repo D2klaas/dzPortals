@@ -8,6 +8,7 @@ export_presets.cfg
 .mono/
 data_*/
 
+addons/github-integration/*
 
 
 
