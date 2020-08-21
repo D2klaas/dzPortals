@@ -21,7 +21,8 @@ Check out the docs. They provide installation notes, a basic explanation of comp
 Wanna know more? [Check it out here](docs/indepth.md)
 
 ## Common Issues
-I'm waiting for your issues
+- crashed when changing the SceneTree - fixed
+- missing singleton reference - fixed
 
 ## Contributing
 Please try and test it. Any issue report and suggestion are appreciated.
