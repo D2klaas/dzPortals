@@ -16,7 +16,6 @@ extends "res://addons/dzPortals/scripts/dzPortalsVolume.gd"
 const BLUE_SIDE = 1
 const RED_SIDE = 2
 
-export(Vector2) var _dimensions = Vector2(1,1) setget _set_dimensions
 export(bool) var arealess = false setget _set_arealess
 
 #const margin = 0.05
@@ -116,16 +115,21 @@ func do_portal():
 	if arealess:
 		var zone
 		var camera = get_viewport().get_camera()
+		var blue_zone = get_blue_zone()
+		var red_zone = get_red_zone()
 		if not camera:
 			return
 		if is_inside( camera.global_transform.origin ):
 			if get_side( camera.global_transform.origin ) == BLUE_SIDE:
-				zone = get_blue_zone()
+				if blue_zone:
+					dzPortals.current_zone = blue_zone
+				if red_zone:
+					red_zone._is_visible = true
 			else:
-				zone = get_red_zone()
-		if zone:
-			dzPortals.current_zone = zone
-
+				if blue_zone:
+					dzPortals.current_zone = red_zone
+				if red_zone:
+					blue_zone._is_visible = true
 
 
 func do_inspector():
@@ -241,9 +245,8 @@ func get_zone_averted_plane(zone):
 
 #----------------------------------- set dimensions
 func _set_dimensions( value ):
-	_dimensions = value
-	dimensions = Vector3(_dimensions.x,_dimensions.y,1)
-	var d = _dimensions / 2.0
+	dimensions = value
+	var d = dimensions / 2.0
 	cornerPoints = [
 		Vector3(-d.x, d.y, 0),
 		Vector3(-d.x,-d.y, 0),
@@ -325,9 +328,9 @@ func auto_find_magnetic_gate():
 		var off_orientation = my_orientation.angle_to(gate_orientation)
 		if off_orientation > magnetic_angle and off_orientation < PI - magnetic_angle:
 			continue
-		if abs(_dimensions.x - gate._dimensions.x) > magnetic_dimension:
+		if abs(dimensions.x - gate.dimensions.x) > magnetic_dimension:
 			continue
-		if abs(_dimensions.y - gate._dimensions.y) > magnetic_dimension:
+		if abs(dimensions.y - gate.dimensions.y) > magnetic_dimension:
 			continue
 		set_magnetic_gate(gate)
 		gate.set_magnetic_gate(self)
@@ -448,7 +451,7 @@ func redraw():
 	if not _is_init:
 		return
 
-	var d = _dimensions / 2.0
+	var d = dimensions / 2.0
 	var d2 = dimensions / 2.0 + Vector3(margin,margin,margin)
 	d2.z = d2.z / 2.0
 	

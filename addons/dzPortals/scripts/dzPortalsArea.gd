@@ -15,7 +15,7 @@ extends "res://addons/dzPortals/scripts/dzPortalsVolume.gd"
 
 
 export(SHAPE) var _shape setget _set_shape
-export(Vector3) var _dimensions = Vector3.ONE setget _set_dimensions
+
 
 export(NodePath) var _zone setget _set_zone
 var zone
@@ -43,8 +43,7 @@ func _set_shape( value:int ):
 
 
 func _set_dimensions(value):
-	_dimensions = value
-	dimensions = _dimensions
+	dimensions = value
 	redraw()
 
 #---------------------------------------- processing
@@ -141,7 +140,7 @@ func _getDrawColor():
 
 var _last_color
 var _last_shape = -1
-var _last_dimensions
+var _lastdimensions
 
 func _process(delta):
 	if not Engine.editor_hint:
@@ -153,8 +152,8 @@ func _process(delta):
 	if _last_shape != _shape:
 		_last_shape = _shape
 		update = true
-	if _last_dimensions != _dimensions:
-		_last_dimensions = _dimensions
+	if _lastdimensions != dimensions:
+		_lastdimensions = dimensions
 		update = true
 	if update:
 		redraw()
@@ -164,7 +163,7 @@ func redraw():
 	if not Engine.editor_hint:
 		return
 
-	var d = _dimensions / 2.0 + Vector3(margin,margin,margin)
+	var d = dimensions / 2.0 + Vector3(margin,margin,margin)
 	clear()
 	
 	match _shape:

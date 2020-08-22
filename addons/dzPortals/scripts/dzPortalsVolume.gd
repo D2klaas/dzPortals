@@ -15,7 +15,7 @@ extends ImmediateGeometry
 
 var shape:int
 enum SHAPE { box,sphere,cylinder }
-var dimensions:Vector3 = Vector3.ONE
+export(Vector3) var dimensions = Vector3.ONE
 export(float) var margin = 0.05
 
 func _ready():
@@ -25,6 +25,8 @@ func _ready():
 func _process(delta):
 	pass
 
+func _set_dimensions(value):
+	dimensions = value
 
 #-------------------------------- state
 func is_inside( vec ):
