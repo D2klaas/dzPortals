@@ -10,13 +10,13 @@
 #
 ######################################################################
 tool
-extends ImmediateGeometry
+extends "res://addons/dzPortals/scripts/dzPortalsVolume.gd"
 #warning-ignore-all:unused_argument
 
-enum SHAPE { box,sphere,cylinder }
-export(SHAPE) var shape = 0
-export(Vector3) var dimensions = Vector3.ONE
-export(float) var margin = 0.05
+
+export(SHAPE) var _shape setget _set_shape
+export(Vector3) var _dimensions = Vector3.ONE setget _set_dimensions
+
 export(NodePath) var _zone setget _set_zone
 var zone
 export var _blackList = [] setget _set_blackList
@@ -35,6 +35,18 @@ signal area_exited
 func get_class():
 	return "dzPortalsArea"
 
+#---------------------------------------- shape
+func _set_shape( value:int ):
+	_shape = value
+	shape = _shape
+	redraw()
+
+
+func _set_dimensions(value):
+	_dimensions = value
+	dimensions = _dimensions
+	redraw()
+
 #---------------------------------------- processing
 func _ready():
 	if Engine.editor_hint:
@@ -44,6 +56,7 @@ func _ready():
 	material_override =  load("res://addons/dzPortals/materials/area.material")
 	add_to_group("dzPortalsAreas")
 	_is_ready = true
+	redraw()
 
 func _add_viewport_sprite():
 	if _viewportSprite:
@@ -116,47 +129,6 @@ func _register_zone( ):
 	zone = get_node_or_null(_zone)
 
 
-#-------------------------------- state
-func is_inside( vec ):
-	match shape:
-		SHAPE.box:
-			return _is_inside_box(vec)
-		SHAPE.sphere:
-			return _is_inside_sphere(vec)
-		SHAPE.cylinder:
-			return _is_inside_cylinder( vec )
-	return false
-
-
-func _is_inside_box( vec ):
-	var d = dimensions / 2.0 + Vector3(margin,margin,margin)
-	var v = to_local(vec)
-	if abs(v.x) > d.x:
-		return false
-	if abs(v.y) > d.y:
-		return false
-	if abs(v.z) > d.z:
-		return false
-	return true
-
-
-func _is_inside_sphere( vec ):
-	var d = dimensions / 2.0 + Vector3(margin,margin,margin)
-	var v = to_local(vec)
-	if v.length() > d.x:
-		return false
-	return true
-
-
-func _is_inside_cylinder( vec ):
-	var d = dimensions / 2.0 + Vector3(margin,margin,margin)
-	var v = to_local(vec)
-	if abs(v.y) > d.y:
-		return false
-	if Vector2(v.x,v.z).length() > d.x:
-		return false
-	return true
-
 
 #-------------------------------- drawing
 func _getDrawColor():
@@ -167,12 +139,8 @@ func _getDrawColor():
 	else:
 		return Color(1,0,0,0.25)
 
-func _setDrawColor():
-	set_color(_getDrawColor())
-
-
 var _last_color
-var _last_shape
+var _last_shape = -1
 var _last_dimensions
 
 func _process(delta):
@@ -182,11 +150,11 @@ func _process(delta):
 	if _last_color != _getDrawColor().to_rgba32():
 		_last_color = _getDrawColor().to_rgba32()
 		update = true
-	if _last_shape != shape:
-		_last_shape = shape
+	if _last_shape != _shape:
+		_last_shape = _shape
 		update = true
-	if _last_dimensions != dimensions:
-		_last_dimensions = dimensions
+	if _last_dimensions != _dimensions:
+		_last_dimensions = _dimensions
 		update = true
 	if update:
 		redraw()
@@ -195,13 +163,11 @@ func _process(delta):
 func redraw():
 	if not Engine.editor_hint:
 		return
-	if not _is_ready:
-		return
-	
-	var d = dimensions / 2.0 + Vector3(margin,margin,margin)
+
+	var d = _dimensions / 2.0 + Vector3(margin,margin,margin)
 	clear()
 	
-	match shape:
+	match _shape:
 		SHAPE.box:
 			_drawBox(d)
 		SHAPE.sphere:
@@ -210,134 +176,6 @@ func redraw():
 			_drawCylinder( 18, d.x, d.y)
 
 
-func _drawBox( d ):
-	begin(Mesh.PRIMITIVE_TRIANGLES)
-	_setDrawColor()
-	
-	set_uv(Vector2( d.x, d.y))
-	add_vertex(Vector3( d.x, d.y, d.z))
-	set_uv(Vector2(-d.x, d.y))
-	add_vertex(Vector3(-d.x, d.y, d.z))
-	set_uv(Vector2(-d.x,-d.y))
-	add_vertex(Vector3(-d.x, d.y,-d.z))
-	set_uv(Vector2(-d.x,-d.y))
-	add_vertex(Vector3(-d.x, d.y,-d.z))
-	set_uv(Vector2( d.x,-d.y))
-	add_vertex(Vector3( d.x, d.y,-d.z))
-	set_uv(Vector2( d.x, d.y))
-	add_vertex(Vector3( d.x, d.y, d.z))
-	
-	set_uv(Vector2(-d.x, d.y))
-	add_vertex(Vector3(-d.x,-d.y, d.z))
-	set_uv(Vector2( d.x, d.y))
-	add_vertex(Vector3( d.x,-d.y, d.z))
-	set_uv(Vector2(-d.x,-d.y))
-	add_vertex(Vector3(-d.x,-d.y,-d.z))
-	set_uv(Vector2( d.x,-d.y))
-	add_vertex(Vector3( d.x,-d.y,-d.z))
-	set_uv(Vector2(-d.x,-d.y))
-	add_vertex(Vector3(-d.x,-d.y,-d.z))
-	set_uv(Vector2( d.x, d.y))
-	add_vertex(Vector3( d.x,-d.y, d.z))
-	
-	set_uv(Vector2( d.x, d.y))
-	add_vertex(Vector3( d.x, d.y,-d.z))
-	set_uv(Vector2(-d.x, d.y))
-	add_vertex(Vector3(-d.x, d.y,-d.z))
-	set_uv(Vector2(-d.x,-d.y))
-	add_vertex(Vector3(-d.x,-d.y,-d.z))
-	set_uv(Vector2(-d.x,-d.y))
-	add_vertex(Vector3(-d.x,-d.y,-d.z))
-	set_uv(Vector2( d.x,-d.y))
-	add_vertex(Vector3( d.x,-d.y,-d.z))
-	set_uv(Vector2( d.x, d.y))
-	add_vertex(Vector3( d.x, d.y,-d.z))
-	
-	set_uv(Vector2(-d.x, d.y))
-	add_vertex(Vector3(-d.x, d.y, d.z))
-	set_uv(Vector2( d.x, d.y))
-	add_vertex(Vector3( d.x, d.y, d.z))
-	set_uv(Vector2(-d.x,-d.y))
-	add_vertex(Vector3(-d.x,-d.y, d.z))
-	set_uv(Vector2( d.x,-d.y))
-	add_vertex(Vector3( d.x,-d.y, d.z))
-	set_uv(Vector2(-d.x,-d.y))
-	add_vertex(Vector3(-d.x,-d.y, d.z))
-	set_uv(Vector2( d.x, d.y))
-	add_vertex(Vector3( d.x, d.y, d.z))
-	
-	set_uv(Vector2( d.x, d.y))
-	add_vertex(Vector3( d.x, d.y, d.z))
-	set_uv(Vector2( d.x,-d.y))
-	add_vertex(Vector3( d.x, d.y,-d.z))
-	set_uv(Vector2(-d.x,-d.y))
-	add_vertex(Vector3( d.x,-d.y,-d.z))
-	set_uv(Vector2(-d.x,-d.y))
-	add_vertex(Vector3( d.x,-d.y,-d.z))
-	set_uv(Vector2(-d.x, d.y))
-	add_vertex(Vector3( d.x,-d.y, d.z))
-	set_uv(Vector2( d.x, d.y))
-	add_vertex(Vector3( d.x, d.y, d.z))
-	
-	set_uv(Vector2( d.x,-d.y))
-	add_vertex(Vector3(-d.x, d.y,-d.z))
-	set_uv(Vector2( d.x, d.y))
-	add_vertex(Vector3(-d.x, d.y, d.z))
-	set_uv(Vector2(-d.x,-d.y))
-	add_vertex(Vector3(-d.x,-d.y,-d.z))
-	set_uv(Vector2(-d.x, d.y))
-	add_vertex(Vector3(-d.x,-d.y, d.z))
-	set_uv(Vector2(-d.x,-d.y))
-	add_vertex(Vector3(-d.x,-d.y,-d.z))
-	set_uv(Vector2( d.x, d.y))
-	add_vertex(Vector3(-d.x, d.y, d.z))
-	
-	end()
-
-
-func _drawCylinder( sides, r, h):
-	var angle = (360.0 / sides) * 0.01745329252
-	var halfHeight = h
-	sides += 1
-	
-	# draw top of the tube
-	begin(Mesh.PRIMITIVE_TRIANGLE_FAN )
-	_setDrawColor()
-	for i in range(0,sides):
-		var x = cos( ( i * angle ) ) * r;
-		var y = sin( ( i * angle ) ) * r;
-		set_uv(Vector2(x,y))
-		add_vertex( Vector3(x, -halfHeight, y))
-	end()
-	
-	# draw bottom of the tube
-	begin(Mesh.PRIMITIVE_TRIANGLE_FAN )
-	_setDrawColor()
-	for i in range(0,sides):
-		var x = cos( ( i * angle ) ) * r
-		var y = sin( ( i * angle ) ) * r
-		set_uv(Vector2(x,y))
-		add_vertex( Vector3(x, halfHeight, y))
-	end()
-	
-	# draw sides
-	begin(Mesh.PRIMITIVE_TRIANGLE_STRIP )
-	_setDrawColor()
-	for i in range(0,sides):
-		var x = cos( ( i * angle ) ) * r;
-		var y = sin( ( i * angle ) ) * r;
-		set_uv(Vector2(i, halfHeight))
-		add_vertex( Vector3(x, halfHeight, y))
-		set_uv(Vector2(i,-halfHeight))
-		add_vertex( Vector3(x, -halfHeight, y))
-	end()
-
-
-func _drawSphere( d ):
-	begin(Mesh.PRIMITIVE_TRIANGLES )
-	_setDrawColor()
-	add_sphere( 8, 14, d )
-	end()
 
 
 #----------------------------------- tool functions
@@ -393,7 +231,7 @@ func resize_to_mesh( child ):
 	lowest = to_local(lowest)
 	highest = to_local(highest)
 	size = highest - lowest
-	dimensions = size.abs()
+	_dimensions = size.abs()
 
 
 func resize_to_zone():
@@ -443,7 +281,7 @@ func resize_to_zone():
 	lowest = to_local(lowest)
 	highest = to_local(highest)
 	size = highest - lowest
-	dimensions = size.abs()
+	_dimensions = size.abs()
 	
 	property_list_changed_notify()
 

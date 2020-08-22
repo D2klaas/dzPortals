@@ -10,14 +10,16 @@
 #
 ######################################################################
 tool
-extends ImmediateGeometry
+extends "res://addons/dzPortals/scripts/dzPortalsVolume.gd"
 #warning-ignore-all:unused_argument
 
 const BLUE_SIDE = 1
 const RED_SIDE = 2
 
-export(Vector2) var dimensions = Vector2(1,1) setget _set_dimensions
-const margin = 0.05
+export(Vector2) var _dimensions = Vector2(1,1) setget _set_dimensions
+export(bool) var arealess = false setget _set_arealess
+
+#const margin = 0.05
 
 export(bool) var do_frustum_check = true
 
@@ -39,7 +41,7 @@ export(bool) var disabled = false setget _set_disabled
 var blue_zone
 var red_zone
 
-var cornerPoints = []
+var cornerPoints = [Vector3.ZERO,Vector3.ZERO,Vector3.ZERO,Vector3.ZERO]
 var _plane
 var _viewportSprite
 var _is_init = false
@@ -49,14 +51,24 @@ func _init():
 	_magnetic_gate = NodePath("")
 
 
-func _enter_tree():
-	set_process(true)
-	_is_tree = true
+func _set_arealess(value):
+	arealess = value
+	redraw()
 
-func _exit_tree():
-	set_process(false)
-	_is_tree = false
-
+var last_blue_zone_visible
+var last_red_zone_visible
+func _process(delta):
+	var update = false
+	var zone = get_blue_zone()
+	if zone and last_blue_zone_visible != zone._is_visible:
+		last_blue_zone_visible = zone._is_visible
+		update = true
+	zone = get_red_zone()
+	if zone and last_red_zone_visible != zone._is_visible:
+		last_red_zone_visible = zone._is_visible
+		update = true
+	if update:
+		redraw()
 
 func get_class():
 	return "dzPortalsGate"
@@ -70,16 +82,8 @@ func _ready():
 		_add_viewport_sprite()
 	_register_blue_zone()
 	_register_red_zone()
-	_set_dimensions(dimensions)
 	add_to_group("dzPortalsGates")
 
-
-#func _process(delta):
-#	#set_notify_transform alternative
-#	if Engine.editor_hint:
-#		if not last_transform.is_equal_approx( global_transform ):
-#			_on_transform()
-#			last_transform = Transform(global_transform.basis,global_transform.origin)
 
 func _add_viewport_sprite():
 	if _viewportSprite:
@@ -101,15 +105,27 @@ func _notification( what ):
 
 
 #----------------------------------- processing
-func go_prepare():
+func do_prepare():
 	if is_disabled():
 		return
 	_plane = Plane(to_global(cornerPoints[1]),to_global(cornerPoints[0]),to_global(cornerPoints[2]))
 	pass
 
 
-func go_portal():
-	pass
+func do_portal():
+	if arealess:
+		var zone
+		var camera = get_viewport().get_camera()
+		if not camera:
+			return
+		if is_inside( camera.global_transform.origin ):
+			if get_side( camera.global_transform.origin ) == BLUE_SIDE:
+				zone = get_blue_zone()
+			else:
+				zone = get_red_zone()
+		if zone:
+			dzPortals.current_zone = zone
+
 
 
 func do_inspector():
@@ -225,8 +241,9 @@ func get_zone_averted_plane(zone):
 
 #----------------------------------- set dimensions
 func _set_dimensions( value ):
-	dimensions = value
-	var d = dimensions / 2.0
+	_dimensions = value
+	dimensions = Vector3(_dimensions.x,_dimensions.y,1)
+	var d = _dimensions / 2.0
 	cornerPoints = [
 		Vector3(-d.x, d.y, 0),
 		Vector3(-d.x,-d.y, 0),
@@ -324,9 +341,9 @@ func auto_find_magnetic_gate():
 		var off_orientation = my_orientation.angle_to(gate_orientation)
 		if off_orientation > magnetic_angle and off_orientation < PI - magnetic_angle:
 			continue
-		if abs(dimensions.x - gate.dimensions.x) > magnetic_dimension:
+		if abs(_dimensions.x - gate._dimensions.x) > magnetic_dimension:
 			continue
-		if abs(dimensions.y - gate.dimensions.y) > magnetic_dimension:
+		if abs(_dimensions.y - gate._dimensions.y) > magnetic_dimension:
 			continue
 		set_magnetic_gate(gate)
 		gate.set_magnetic_gate(self)
@@ -432,15 +449,40 @@ func get_other_zone( zone ):
 		return get_red_zone()
 
 
+var draw_color = Color(0.5,0.5,0.5,0.25)
+func _getDrawColor():
+	return draw_color
+
+
+func _setDrawColor():
+	set_color(_getDrawColor())
+
 func redraw():
 	if not Engine.editor_hint:
 		return
 	if not _is_init:
 		return
 
-	var d = dimensions / 2.0
+	var d = _dimensions / 2.0
+	var d2 = dimensions / 2.0 + Vector3(margin,margin,margin)
+	d2.z = d2.z / 2.0
 	
 	clear()
+	
+	if arealess:
+		var zone = get_blue_zone()
+		if zone and zone._is_visible:
+			draw_color = Color(0,1,0,0.5)
+		else:
+			draw_color = Color(0.5,0.5,0.5,0.25)
+		_drawBox(d2,Vector3(0,0,d2.z))
+			
+		zone = get_red_zone()
+		if zone and zone._is_visible:
+			draw_color = Color(0,1,0,0.5)
+		else:
+			draw_color = Color(0.5,0.5,0.5,0.25)
+		_drawBox(d2,Vector3(0,0,-d2.z))
 	
 	begin(Mesh.PRIMITIVE_TRIANGLES)
 	if disabled:
