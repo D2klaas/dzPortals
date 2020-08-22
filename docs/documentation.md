@@ -17,7 +17,7 @@ You're done.
 ## Basic workings
 DzPortals works with 3 basic objects **zones**, **areas** and **gates**.
   
-A **zone** defines a confined space that should be culled by the portals engine.
+**zones** defines a confined space that should be culled by the portals engine.
 **Areas** define the volume of a zone. A zones volume can be defined by one or more areas.
 **Gates** are the visual connections between zones.  
   
@@ -33,6 +33,7 @@ Zone should containe all visual instances of the defining space. If the zone is 
 ## Area
 <img width="225" height="225" alt="Zone Gizmo in editor" src="screens/area-icon.PNG"> 
 Areas should enclose all of the visual instances in the zone. You can have as many areas linked to a zone as you like.
+If you dont want to use areas check out the arealess property of the gates.
 
 ### Properties:
 * shape: shape defines the volumetric body of the area. So far there are box, sphere and cylindrical shapes available.
@@ -53,11 +54,13 @@ Areas should enclose all of the visual instances in the zone. You can have as ma
 <img width="225" height="225" alt="Gate Gizmo in editor" src="screens/gate-icon.PNG"> 
 Gates should cover doorways, portals, windows etc. completly or else you will have pop in effects when looking around.
 Gates have two sides, a blue side and a red side. The sides should be connected with the corresponding zones.
-Gates can connect two zones via setting them directly or can be defined as magnetic. Magnetic gates have only one side connected with a zone. If they come close to another magnetic portal with similar properties they can connect and act as one portal. This is espacially usefull when you are building your scene with modular subscenes. You can then define the openings in the subscene and when putting it together in the main scene they  connect automaticly.
+Gates can connect two zones via setting them directly or can be defined as magnetic. Magnetic gates have only one side connected with a zone. If they come close to another magnetic portal with similar properties they can connect and act as one portal. This is espacially usefull when you are building your scene with modular subscenes. You can then define the openings in the subscene and when putting it together in the main scene they connect automaticly.
+When you use arealess gates you dont need to enclose the zone with areas. The gate then tracks if the cameras has traveld through the gate and keeps the zones enabled. This is more convenient but is more prone to glitch.
 
 ### Properties:
 * dimensions: the sapcial extends of the portal
 * do frustum check: uses anhanced visibility check with sligthly increased calculation effort
+* arealess: use zones without areas with this setting
 * blue zone: node Path to the zone on the blue side
 * red zone: node Path to the zone on the red side
 * is magnetic: this gate is magnetic and will connect to other magnetic gates. This option only apply when **only one** side is connected to a zone.
@@ -206,6 +209,9 @@ void **resize_to_zone( )**
 
 **dimensions**: Vector2  
 *defines spacial extends*
+
+**arealess** :bool  
+*enable gate for zones without areas*
 
 **do_frustum_check** :bool  
 *enables enhanced culling methode*
