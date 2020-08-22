@@ -299,27 +299,11 @@ func set_magnetic_gate( value:Object ):
 
 
 
-#func _register_magnetic_gate( stop_propagate=false ):
-#	var new = get_node_or_null(_magnetic_gate)
-#	if magnetic_gate and 
-#		magnetic_gate = get_node_or_null(_magnetic_gate)
-#	redraw()
-
-
 func get_magnetic_zone():
 	if not blue_zone:
 		return red_zone
 	if not red_zone:
 		return blue_zone
-
-
-#func remove_magnetic_gate( gate ):
-#	if not gate:
-#		return
-#	if magnetic_gate == gate:
-#		var mg = magnetic_gate
-#		_set_magnetic_gate("")
-#		mg._set_magnetic_gate("")
 
 
 func auto_find_magnetic_gate():
@@ -381,6 +365,7 @@ func get_blue_zone():
 func set_blue_zone( value ):
 	_blue_zone = value
 	_register_blue_zone()
+
 
 
 func _register_blue_zone():

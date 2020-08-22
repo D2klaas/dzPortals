@@ -231,7 +231,7 @@ func resize_to_mesh( child ):
 	lowest = to_local(lowest)
 	highest = to_local(highest)
 	size = highest - lowest
-	_dimensions = size.abs()
+	_set_dimensions(size.abs())
 
 
 func resize_to_zone():
@@ -281,7 +281,7 @@ func resize_to_zone():
 	lowest = to_local(lowest)
 	highest = to_local(highest)
 	size = highest - lowest
-	_dimensions = size.abs()
+	_set_dimensions(size.abs())
 	
 	property_list_changed_notify()
 
