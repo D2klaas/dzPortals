@@ -19,7 +19,9 @@ DzPortals works with 3 basic objects **zones**, **areas** and **gates**.
   
 **zones** defines a confined space that should be culled by the portals engine.
 **Areas** define the volume of a zone. A zones volume can be defined by one or more areas.
-**Gates** are the visual connections between zones.  
+**Gates** are the visual connections between zones.
+
+*also read about the new arealess feature for zones without areas*
   
 ## Zone
 <img width="225" height="225" alt="Area Gizmo in editor" src="screens/zone-icon.PNG"> 
